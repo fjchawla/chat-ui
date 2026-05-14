@@ -75,11 +75,11 @@ ok "$SERVICE is up"
 # ── Health check ───────────────────────────────────────────────────────────────
 log "Waiting for health check…"
 MAX=24; COUNT=0
-until curl -sf http://localhost:8090/login >/dev/null 2>&1; do
+until curl -sf http://localhost/login >/dev/null 2>&1; do
     COUNT=$((COUNT+1))
     [ $COUNT -ge $MAX ] && fail "Service did not become healthy after ${MAX} attempts"
     printf '.'
     sleep 5
 done
 echo
-ok "ServiceCodeChat UI is live at http://localhost:8090"
+ok "Chat UI is live at http://localhost"
