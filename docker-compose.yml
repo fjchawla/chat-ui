@@ -20,7 +20,7 @@ services:
     container_name: scc-chat-ui
     restart: unless-stopped
     ports:
-      - "8090:8090"
+      - "80:8090"
     environment:
       # URL of the ServiceCodeChat backend API
       BACKEND_BASE_URL: ${BACKEND_BASE_URL:-http://scc-app:8080}
