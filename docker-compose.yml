@@ -1,0 +1,44 @@
+version: "3.9"
+
+# Stand-alone compose for the chat-ui service.
+# The ServiceCodeChat backend must be reachable at BACKEND_BASE_URL.
+#
+# Typical usage alongside the main stack:
+#   # In ServiceCodeChat/  (start the backend first)
+#   docker compose up -d
+#   # In ServiceCodeChat/chat-ui/
+#   BACKEND_BASE_URL=http://<host-ip>:8080 docker compose up -d
+#
+# Or reference the backend network directly — see the 'networks' section below.
+
+services:
+
+  chat-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scc-chat-ui
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      # URL of the ServiceCodeChat backend API
+      BACKEND_BASE_URL: ${BACKEND_BASE_URL:-http://scc-app:8080}
+      # Override login credentials at runtime (optional)
+      APP_USERNAME: ${APP_USERNAME:-admin}
+      APP_PASSWORD: ${APP_PASSWORD:-changeme}
+    # If both stacks share a Docker network, attach to it here:
+    # networks:
+    #   - scc_default
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8090/login || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+# Uncomment to attach to the backend's network:
+# networks:
+#   scc_default:
+#     external: true
+#     name: servicecodechat_default

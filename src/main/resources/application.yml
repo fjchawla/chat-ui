@@ -1,0 +1,22 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: chat-ui
+  thymeleaf:
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+# URL of the ServiceCodeChat backend API
+backend:
+  base-url: ${BACKEND_BASE_URL:http://localhost:8080}
+
+# Fixed credentials — change via environment variable in production
+app:
+  auth:
+    username: ${APP_USERNAME:admin}
+    password: ${APP_PASSWORD:changeme}
