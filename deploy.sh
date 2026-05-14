@@ -51,10 +51,13 @@ if git -C "$REPO_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         log "Skipping pull — uncommitted local changes detected"
     fi
 else
-    # Fresh clone
-    log "No git repo found — cloning from GitHub…"
-    git clone "$REPO_URL" "$REPO_DIR"
-    ok "Repository cloned"
+    # Directory exists but has no git repo — initialise in-place
+    log "No git repo found — initialising and fetching from GitHub…"
+    git -C "$REPO_DIR" init
+    git -C "$REPO_DIR" remote add origin "$REPO_URL"
+    git -C "$REPO_DIR" fetch --depth=1 origin main
+    git -C "$REPO_DIR" reset --hard origin/main
+    ok "Repository initialised"
 fi
 
 # ── Build image ────────────────────────────────────────────────────────────────
