@@ -15,6 +15,16 @@ spring:
     username: ${DB_USERNAME:scc}
     password: ${DB_PASSWORD:scc_secret}
     driver-class-name: org.postgresql.Driver
+  cloud:
+    openfeign:
+      client:
+        config:
+          chat-api:
+            connectTimeout: 5000
+            readTimeout: 180000   # 3 min — Ollama LLM inference on CPU can be slow
+          ingestion-api:
+            connectTimeout: 5000
+            readTimeout: 600000   # 10 min — large PDF ingestion + embedding
 
 # URL of the ServiceCodeChat backend API
 backend:
