@@ -10,6 +10,11 @@ spring:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/servicecodechat}
+    username: ${DB_USERNAME:scc}
+    password: ${DB_PASSWORD:scc_secret}
+    driver-class-name: org.postgresql.Driver
 
 # URL of the ServiceCodeChat backend API
 backend:

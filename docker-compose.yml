@@ -24,6 +24,10 @@ services:
     environment:
       # URL of the ServiceCodeChat backend API
       BACKEND_BASE_URL: ${BACKEND_BASE_URL:-http://scc-app:8080}
+      # Shared PostgreSQL database (ingestion_log)
+      DB_URL: ${DB_URL:-jdbc:postgresql://scc-postgres:5432/servicecodechat}
+      DB_USERNAME: ${DB_USERNAME:-scc}
+      DB_PASSWORD: ${DB_PASSWORD:-scc_secret}
       # Override login credentials at runtime (optional)
       APP_USERNAME: ${APP_USERNAME:-admin}
       APP_PASSWORD: ${APP_PASSWORD:-changeme}

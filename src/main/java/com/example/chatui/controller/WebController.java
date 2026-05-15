@@ -9,6 +9,7 @@ import com.example.chatui.model.MrrEvalRequest;
 import com.example.chatui.model.MrrEvalResult;
 import feign.FeignException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,10 +22,12 @@ public class WebController {
 
     private final ChatApiClient chatClient;
     private final IngestionApiClient ingestionClient;
+    private final JdbcTemplate jdbc;
 
-    public WebController(ChatApiClient chatClient, IngestionApiClient ingestionClient) {
+    public WebController(ChatApiClient chatClient, IngestionApiClient ingestionClient, JdbcTemplate jdbc) {
         this.chatClient = chatClient;
         this.ingestionClient = ingestionClient;
+        this.jdbc = jdbc;
     }
 
     // ── Page routes ────────────────────────────────────────────────────
@@ -133,10 +136,18 @@ public class WebController {
     @ResponseBody
     public ResponseEntity<?> ingestionStatus() {
         try {
-            List<Object> status = ingestionClient.status();
-            return ResponseEntity.ok(status);
-        } catch (FeignException.ServiceUnavailable e) {
-            return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
+            List<IngestionStatus> rows = jdbc.query(
+                "SELECT id, source_file, status, chunks_count, error_message " +
+                "FROM ingestion_log ORDER BY started_at DESC",
+                (rs, i) -> new IngestionStatus(
+                    rs.getLong("id"),
+                    rs.getString("source_file"),
+                    rs.getString("status"),
+                    rs.getObject("chunks_count", Integer.class),
+                    rs.getString("error_message")
+                )
+            );
+            return ResponseEntity.ok(rows);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Status fetch failed: " + e.getMessage()));
         }
