@@ -20,12 +20,10 @@
             margin-bottom: 24px;
         }
 
-        /* topK row */
         .topk-row { display: flex; align-items: center; gap: 16px; }
         .topk-row label { font-size: 14px; font-weight: 500; color: var(--clr-on-surface); white-space: nowrap; }
         .topk-input {
-            width: 80px; height: 40px;
-            padding: 0 12px;
+            width: 80px; height: 40px; padding: 0 12px;
             background: var(--clr-surf-high);
             border: 1px solid var(--clr-outline-var);
             border-radius: var(--r-sm);
@@ -37,7 +35,6 @@
         .topk-input:focus { border-color: var(--clr-primary); border-width: 2px; }
         .topk-hint { font-size: 12.5px; color: var(--clr-on-surf-faint); }
 
-        /* Section label */
         .section-label {
             font-size: 11px; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.08em;
@@ -47,31 +44,25 @@
 
         /* Test cases table */
         .tc-table { display: flex; flex-direction: column; gap: 8px; }
-
         .tc-header {
             display: grid;
-            grid-template-columns: 32px 1fr 140px 100px 36px;
-            gap: 8px;
-            padding: 0 4px;
+            grid-template-columns: 32px 1fr 130px 90px 36px;
+            gap: 8px; padding: 0 4px;
             font-size: 11px; font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.06em;
             color: var(--clr-on-surf-faint);
         }
         .tc-row {
             display: grid;
-            grid-template-columns: 32px 1fr 140px 100px 36px;
-            gap: 8px;
-            align-items: center;
+            grid-template-columns: 32px 1fr 130px 90px 36px;
+            gap: 8px; align-items: center;
             background: var(--clr-surf-high);
             border: 1px solid var(--clr-outline-var);
             border-radius: var(--r-md);
-            padding: 8px 8px;
+            padding: 8px;
             animation: fade-up var(--dur-m) var(--ease) both;
         }
-        .tc-num {
-            font-size: 12px; font-weight: 600;
-            color: var(--clr-on-surf-faint); text-align: center;
-        }
+        .tc-num { font-size: 12px; font-weight: 600; color: var(--clr-on-surf-faint); text-align: center; }
         .tc-input {
             all: unset;
             background: var(--clr-surf-base);
@@ -79,8 +70,7 @@
             border-radius: var(--r-xs);
             padding: 7px 10px;
             font-family: var(--font); font-size: 13.5px;
-            color: var(--clr-on-surface);
-            width: 100%;
+            color: var(--clr-on-surface); width: 100%;
             transition: border-color var(--dur-s);
         }
         .tc-input:focus { border-color: var(--clr-primary); outline: none; border-width: 2px; }
@@ -92,10 +82,8 @@
             border-radius: var(--r-xs);
             padding: 7px 10px;
             font-family: var(--font); font-size: 13.5px;
-            color: var(--clr-on-surface);
-            width: 100%; cursor: pointer;
-            transition: border-color var(--dur-s);
-            appearance: auto;
+            color: var(--clr-on-surface); width: 100%; cursor: pointer;
+            transition: border-color var(--dur-s); appearance: auto;
         }
         .tc-select:focus { border-color: var(--clr-primary); outline: none; }
         .tc-remove {
@@ -107,19 +95,18 @@
         }
         .tc-remove:hover { background: rgba(255,180,171,0.12); color: var(--clr-error); }
 
-        /* Add row + run buttons */
         .form-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .run-loading { display: none; align-items: center; gap: 10px; font-size: 14px; color: var(--clr-on-surf-var); }
+        .run-loading.visible { display: flex; }
 
         /* ── Results ────────────────────────────────────────────────── */
         #results { display: none; flex-direction: column; gap: 20px; }
         #results.visible { display: flex; }
 
-        /* Score row */
         .score-row {
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 20px;
-            align-items: start;
+            gap: 20px; align-items: start;
         }
         @media (max-width: 640px) { .score-row { grid-template-columns: 1fr; } }
 
@@ -134,19 +121,13 @@
             min-width: 220px;
         }
         .gauge-quality-banner {
-            margin-top: 8px;
-            padding: 6px 20px;
+            margin-top: 8px; padding: 6px 20px;
             border-radius: var(--r-full);
             font-size: 12px; font-weight: 700;
             letter-spacing: 0.08em; text-transform: uppercase;
         }
 
-        /* Stat cards */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-card {
             background: var(--clr-surf-base);
             background-image: linear-gradient(var(--elev-1), var(--elev-1));
@@ -170,25 +151,21 @@
             margin-bottom: 16px;
             display: flex; align-items: center; gap: 8px;
         }
-
         .bar-chart { display: flex; flex-direction: column; gap: 10px; }
         .bar-row {
             display: grid;
             grid-template-columns: 180px 1fr 44px;
-            gap: 10px;
-            align-items: center;
+            gap: 10px; align-items: center;
         }
         .bar-label {
             font-size: 12.5px; color: var(--clr-on-surf-var);
             text-align: right; white-space: nowrap;
             overflow: hidden; text-overflow: ellipsis;
-            direction: rtl; /* truncate start, keep end visible */
+            direction: rtl;
         }
         .bar-track {
-            height: 28px;
-            background: var(--clr-surf-high);
-            border-radius: var(--r-sm);
-            overflow: hidden; position: relative;
+            height: 28px; background: var(--clr-surf-high);
+            border-radius: var(--r-sm); overflow: hidden;
         }
         .bar-fill {
             height: 100%; border-radius: var(--r-sm);
@@ -196,46 +173,28 @@
             display: flex; align-items: center; justify-content: flex-end;
             padding-right: 8px;
             font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.6);
-            min-width: 0;
         }
-        .bar-rr {
-            font-size: 13px; font-weight: 600;
-            text-align: right; flex-shrink: 0;
-        }
-
-        /* Axis labels */
-        .bar-axis {
-            display: grid;
-            grid-template-columns: 180px 1fr 44px;
-            gap: 10px;
-            margin-top: 4px;
-        }
+        .bar-rr { font-size: 13px; font-weight: 600; text-align: right; flex-shrink: 0; }
+        .bar-axis { display: grid; grid-template-columns: 180px 1fr 44px; gap: 10px; margin-top: 4px; }
         .axis-ticks {
             display: flex; justify-content: space-between;
-            font-size: 10.5px; color: var(--clr-on-surf-faint);
-            padding: 0 2px;
+            font-size: 10.5px; color: var(--clr-on-surf-faint); padding: 0 2px;
         }
 
-        /* Rank distribution */
-        .rank-dist {
-            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
-        }
+        .rank-dist { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
         .rank-pill {
             display: flex; flex-direction: column; align-items: center;
             background: var(--clr-surf-high);
             border: 1px solid var(--clr-outline-var);
             border-radius: var(--r-md);
-            padding: 10px 16px;
-            min-width: 60px;
+            padding: 10px 16px; min-width: 60px;
         }
         .rank-pill-val   { font-size: 22px; font-weight: 700; line-height: 1; }
         .rank-pill-label { font-size: 11px; color: var(--clr-on-surf-faint); margin-top: 4px; text-align: center; }
 
         /* Detail table */
         .detail-table-wrap { overflow-x: auto; }
-        .detail-table {
-            width: 100%; border-collapse: collapse; font-size: 13.5px;
-        }
+        .detail-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
         .detail-table th {
             text-align: left; padding: 10px 14px;
             font-size: 11px; font-weight: 700; text-transform: uppercase;
@@ -246,8 +205,7 @@
         .detail-table td {
             padding: 12px 14px;
             border-bottom: 1px solid rgba(70,67,78,0.4);
-            color: var(--clr-on-surface);
-            vertical-align: middle;
+            color: var(--clr-on-surface); vertical-align: middle;
         }
         .detail-table tr:last-child td { border-bottom: none; }
         .detail-table tr:hover td { background: rgba(190,194,255,0.03); }
@@ -257,31 +215,45 @@
             width: 28px; height: 28px; border-radius: 50%;
             font-size: 12px; font-weight: 700;
         }
-        .rank-1 { background: rgba(255,189,47,0.2); color: #FFBD2F; }
+        .rank-1 { background: rgba(255,189,47,0.2);  color: #FFBD2F; }
         .rank-2 { background: rgba(190,194,255,0.15); color: var(--clr-primary); }
         .rank-3 { background: rgba(121,220,121,0.15); color: var(--clr-success); }
-        .rank-n { background: var(--clr-surf-high); color: var(--clr-on-surf-faint); }
+        .rank-n { background: var(--clr-surf-high);   color: var(--clr-on-surf-faint); }
         .rank-0 { background: rgba(255,180,171,0.15); color: var(--clr-error); }
 
-        .rr-bar-inline {
-            display: flex; align-items: center; gap: 8px;
-        }
-        .rr-track-sm {
-            width: 80px; height: 6px;
-            background: var(--clr-surf-high); border-radius: 3px; overflow: hidden;
-            flex-shrink: 0;
-        }
-        .rr-fill-sm { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-        .rr-val-sm  { font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+        .rr-bar-inline { display: flex; align-items: center; gap: 8px; }
+        .rr-track-sm { width: 80px; height: 6px; background: var(--clr-surf-high); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+        .rr-fill-sm  { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+        .rr-val-sm   { font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
 
-        /* Loading overlay */
-        .run-loading { display: none; align-items: center; gap: 10px; font-size: 14px; color: var(--clr-on-surf-var); }
-        .run-loading.visible { display: flex; }
+        /* Retrieved codes */
+        .code-chips { display: flex; flex-wrap: wrap; gap: 4px; max-width: 280px; }
+        .code-chip {
+            font-size: 11px; font-weight: 600;
+            padding: 2px 7px; border-radius: 4px;
+            font-family: monospace;
+        }
+        .code-chip-match {
+            background: rgba(121,220,121,0.18);
+            color: var(--clr-success);
+            border: 1px solid rgba(121,220,121,0.35);
+        }
+        .code-chip-other {
+            background: rgba(190,194,255,0.1);
+            color: var(--clr-on-surf-var);
+            border: 1px solid var(--clr-outline-var);
+        }
+        .code-chip-none {
+            background: rgba(255,180,171,0.1);
+            color: var(--clr-error);
+            font-style: italic;
+            border: 1px solid rgba(255,180,171,0.25);
+            font-family: var(--font);
+        }
 
-        /* Legend */
         .legend { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
         .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--clr-on-surf-var); }
-        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     </style>
 </head>
 <body class="page-root">
@@ -290,18 +262,16 @@
 
 <div class="page-scroll">
     <div class="page-content">
-        <div class="page-max" style="max-width:900px">
+        <div class="page-max" style="max-width:960px">
 
-            <!-- ── Page header ─────────────────────────────────────── -->
             <div class="page-header">
                 <h1 class="page-title">MRR Evaluation</h1>
-                <p class="page-sub">Measure retrieval quality using Mean Reciprocal Rank. Higher is better — a score of 1.0 means every query found the correct service in the top result.</p>
+                <p class="page-sub">Measure retrieval quality using Mean Reciprocal Rank against known Emirates Code numbers. MRR = 1.0 means every query found the correct code at rank 1.</p>
             </div>
 
             <!-- ── Configuration ──────────────────────────────────── -->
             <div class="config-card">
 
-                <!-- topK -->
                 <div class="topk-row">
                     <label for="topk">Top-K Results</label>
                     <input type="number" id="topk" class="topk-input" value="10" min="1" max="50"/>
@@ -310,22 +280,18 @@
 
                 <div class="divider"></div>
 
-                <!-- Test cases -->
                 <div>
                     <div class="section-label">Test Cases</div>
                     <div class="tc-header" style="margin-bottom:6px">
                         <span></span>
                         <span>Query</span>
-                        <span>Expected Service Code</span>
+                        <span>Expected Code Number</span>
                         <span>Language</span>
                         <span></span>
                     </div>
-                    <div class="tc-table" id="tc-table">
-                        <!-- rows injected by JS -->
-                    </div>
+                    <div class="tc-table" id="tc-table"></div>
                 </div>
 
-                <!-- Actions -->
                 <div class="form-actions">
                     <button class="btn btn-outlined" onclick="addRow()" style="gap:6px">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
@@ -348,7 +314,6 @@
             <!-- ── Results ─────────────────────────────────────────── -->
             <div id="results">
 
-                <!-- Score + stats row -->
                 <div class="score-row">
 
                     <!-- Gauge -->
@@ -361,68 +326,50 @@
                                     <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                                 </filter>
                             </defs>
-                            <!-- Background track (270° arc) -->
                             <circle cx="110" cy="100" r="70"
-                                fill="none"
-                                stroke="var(--clr-surf-high)"
-                                stroke-width="16"
-                                stroke-dasharray="329.87 109.96"
-                                stroke-linecap="round"
+                                fill="none" stroke="var(--clr-surf-high)" stroke-width="16"
+                                stroke-dasharray="329.87 109.96" stroke-linecap="round"
                                 transform="rotate(135 110 100)"/>
-                            <!-- Value arc -->
                             <circle cx="110" cy="100" r="70"
-                                fill="none"
-                                stroke="#79DC79"
-                                stroke-width="16"
-                                stroke-dasharray="0 439.82"
-                                stroke-linecap="round"
+                                fill="none" stroke="#79DC79" stroke-width="16"
+                                stroke-dasharray="0 439.82" stroke-linecap="round"
                                 transform="rotate(135 110 100)"
-                                id="gauge-arc"
-                                filter="url(#arc-glow)"
+                                id="gauge-arc" filter="url(#arc-glow)"
                                 style="transition: stroke-dasharray 0.9s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease"/>
-                            <!-- Tick marks at 0, 0.25, 0.5, 0.75, 1.0 -->
-                            <!-- 0.0 bottom-left -->
-                            <text x="28" y="172" text-anchor="middle" font-size="10" fill="var(--clr-on-surf-faint)" font-family="Outfit,sans-serif">0.0</text>
-                            <!-- 0.5 top -->
-                            <text x="110" y="18" text-anchor="middle" font-size="10" fill="var(--clr-on-surf-faint)" font-family="Outfit,sans-serif">0.5</text>
-                            <!-- 1.0 bottom-right -->
+                            <text x="28"  y="172" text-anchor="middle" font-size="10" fill="var(--clr-on-surf-faint)" font-family="Outfit,sans-serif">0.0</text>
+                            <text x="110" y="18"  text-anchor="middle" font-size="10" fill="var(--clr-on-surf-faint)" font-family="Outfit,sans-serif">0.5</text>
                             <text x="192" y="172" text-anchor="middle" font-size="10" fill="var(--clr-on-surf-faint)" font-family="Outfit,sans-serif">1.0</text>
-                            <!-- MRR value (large) -->
                             <text x="110" y="108" text-anchor="middle"
                                 font-family="Outfit,sans-serif" font-size="44" font-weight="700"
                                 fill="var(--clr-on-surface)" id="gauge-score">—</text>
-                            <!-- Sub label -->
                             <text x="110" y="130" text-anchor="middle"
                                 font-family="Outfit,sans-serif" font-size="11" font-weight="500"
                                 fill="var(--clr-on-surf-faint)">MRR SCORE</text>
                         </svg>
                         <div class="gauge-quality-banner" id="gauge-banner"
-                             style="background:rgba(121,220,121,0.12);color:#79DC79">
-                            —
-                        </div>
+                             style="background:rgba(121,220,121,0.12);color:#79DC79">—</div>
                     </div>
 
-                    <!-- Stat grid -->
+                    <!-- Stats -->
                     <div style="display:flex;flex-direction:column;gap:12px;flex:1">
                         <div class="stat-grid">
                             <div class="stat-card">
                                 <div class="stat-val" id="stat-total" style="color:var(--clr-primary)">—</div>
-                                <div class="stat-label">Total Test Cases</div>
+                                <div class="stat-label">Total Queries</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-val" id="stat-rank1" style="color:var(--clr-success)">—</div>
+                                <div class="stat-val" id="stat-hits" style="color:var(--clr-success)">—</div>
+                                <div class="stat-label">Queries with Hit</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-val" id="stat-rank1" style="color:#FFBD2F">—</div>
                                 <div class="stat-label">Found at Rank 1</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-val" id="stat-top3" style="color:#FFBD2F">—</div>
-                                <div class="stat-label">Found in Top 3</div>
                             </div>
                             <div class="stat-card">
                                 <div class="stat-val" id="stat-notfound" style="color:var(--clr-error)">—</div>
                                 <div class="stat-label">Not Found</div>
                             </div>
                         </div>
-                        <!-- Rank distribution pills -->
                         <div class="chart-card" style="padding:16px 20px">
                             <div class="section-label" style="margin-bottom:10px">Rank Distribution</div>
                             <div class="rank-dist" id="rank-dist">—</div>
@@ -431,7 +378,7 @@
 
                 </div>
 
-                <!-- Bar chart: reciprocal rank per query -->
+                <!-- Bar chart -->
                 <div class="chart-card">
                     <div class="chart-title">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--clr-primary)">
@@ -439,7 +386,7 @@
                         </svg>
                         Reciprocal Rank per Query
                         <div class="legend" style="margin-left:auto">
-                            <div class="legend-item"><div class="legend-dot" style="background:#79DC79"></div>Top 2</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#79DC79"></div>Rank 1–2</div>
                             <div class="legend-item"><div class="legend-dot" style="background:#FFBD2F"></div>Rank 3–4</div>
                             <div class="legend-item"><div class="legend-dot" style="background:#FF8A65"></div>Rank 5+</div>
                             <div class="legend-item"><div class="legend-dot" style="background:var(--clr-error)"></div>Not Found</div>
@@ -459,7 +406,7 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--clr-primary)">
                             <path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H5V5h15zm-9.5 5h4v2h-4v-2zM15 15H5v-2h10v2zm-5.5 3H5v-2h4.5v2zm5.5 0h-3.5v-2H15v2z"/>
                         </svg>
-                        Per-Case Detail
+                        Per-Query Detail
                     </div>
                     <div class="detail-table-wrap">
                         <table class="detail-table">
@@ -468,7 +415,7 @@
                                     <th>Rank</th>
                                     <th>Query</th>
                                     <th>Expected Code</th>
-                                    <th>Language</th>
+                                    <th>Top Retrieved Codes</th>
                                     <th>Reciprocal Rank</th>
                                 </tr>
                             </thead>
@@ -477,76 +424,76 @@
                     </div>
                 </div>
 
-            </div><!-- end #results -->
+            </div>
 
         </div>
     </div>
 </div>
 
 <script>
-    /* ── Constants ─────────────────────────────────────────────────── */
-    const GAUGE_MAX_ARC = 329.87; // px of arc at MRR=1.0  (270° of circumference)
-    const GAUGE_CIRC    = 439.82; // full circle circumference (2π×70)
+    const GAUGE_MAX_ARC = 329.87;
+    const GAUGE_CIRC    = 439.82;
 
     /* ── Test case rows ────────────────────────────────────────────── */
-    let rowCounter = 0;
+    var rowCounter = 0;
 
-    function addRow(query = '', code = '', lang = 'en') {
+    function addRow(query, code, lang) {
+        query = query || '';
+        code  = code  || '';
+        lang  = lang  || 'en';
         rowCounter++;
-        const id = rowCounter;
-        const row = document.createElement('div');
+        var id  = rowCounter;
+        var row = document.createElement('div');
         row.className = 'tc-row';
         row.id = 'tc-row-' + id;
-        row.innerHTML = `
-            <span class="tc-num">${document.querySelectorAll('.tc-row').length + 1}</span>
-            <input class="tc-input tc-query" type="text" placeholder="e.g. vehicle registration renewal"
-                   value="${esc(query)}" autocomplete="off"/>
-            <input class="tc-input tc-code" type="text" placeholder="e.g. SVC-1023"
-                   value="${esc(code)}" autocomplete="off"/>
-            <select class="tc-select tc-lang">
-                <option value="en" ${lang === 'en' ? 'selected' : ''}>English</option>
-                <option value="ar" ${lang === 'ar' ? 'selected' : ''}>Arabic</option>
-            </select>
-            <button class="tc-remove" onclick="removeRow(${id})" title="Remove">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-            </button>`;
+        row.innerHTML =
+            '<span class="tc-num"></span>' +
+            '<input class="tc-input tc-query" type="text" placeholder="Enter query in English or Arabic" value="' + esc(query) + '" autocomplete="off"/>' +
+            '<input class="tc-input tc-code" type="text" placeholder="e.g. 1.2.3" value="' + esc(code) + '" autocomplete="off"/>' +
+            '<select class="tc-select tc-lang">' +
+                '<option value="en"' + (lang === 'en' ? ' selected' : '') + '>English</option>' +
+                '<option value="ar"' + (lang === 'ar' ? ' selected' : '') + '>Arabic</option>' +
+            '</select>' +
+            '<button class="tc-remove" onclick="removeRow(' + id + ')" title="Remove">' +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>' +
+            '</button>';
         document.getElementById('tc-table').appendChild(row);
         renumberRows();
         row.querySelector('.tc-query').focus();
     }
 
     function removeRow(id) {
-        const row = document.getElementById('tc-row-' + id);
+        var row = document.getElementById('tc-row-' + id);
         if (row) row.remove();
         renumberRows();
     }
 
     function renumberRows() {
-        document.querySelectorAll('.tc-row').forEach((r, i) => {
+        document.querySelectorAll('.tc-row').forEach(function(r, i) {
             r.querySelector('.tc-num').textContent = i + 1;
         });
     }
 
     function collectTestCases() {
-        return Array.from(document.querySelectorAll('.tc-row')).map(row => ({
-            query:               row.querySelector('.tc-query').value.trim(),
-            expectedServiceCode: row.querySelector('.tc-code').value.trim(),
-            language:            row.querySelector('.tc-lang').value
-        })).filter(tc => tc.query && tc.expectedServiceCode);
+        return Array.from(document.querySelectorAll('.tc-row')).map(function(row) {
+            return {
+                query:              row.querySelector('.tc-query').value.trim(),
+                expectedCodeNumber: row.querySelector('.tc-code').value.trim(),
+                language:           row.querySelector('.tc-lang').value
+            };
+        }).filter(function(tc) { return tc.query && tc.expectedCodeNumber; });
     }
 
     /* ── Run evaluation ────────────────────────────────────────────── */
     async function runEvaluation() {
-        const formErr = document.getElementById('form-error');
+        var formErr = document.getElementById('form-error');
         formErr.innerHTML = '';
 
-        const topK = parseInt(document.getElementById('topk').value) || 10;
-        const testCases = collectTestCases();
+        var topK      = parseInt(document.getElementById('topk').value) || 10;
+        var testCases = collectTestCases();
 
         if (testCases.length === 0) {
-            formErr.innerHTML = '<div class="banner banner-error" style="margin-top:8px">Add at least one complete test case (query + expected code).</div>';
+            formErr.innerHTML = '<div class="banner banner-error" style="margin-top:8px">Add at least one complete test case (query + expected code number).</div>';
             return;
         }
 
@@ -554,22 +501,21 @@
         document.getElementById('results').classList.remove('visible');
 
         try {
-            const res = await fetch('/api/ingest/evaluate', {
+            var res  = await fetch('/api/ingest/evaluate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topK, testCases })
+                body: JSON.stringify({ topK: topK, testCases: testCases })
             });
-            const data = await res.json();
+            var data = await res.json();
             if (!res.ok) {
-                formErr.innerHTML = `<div class="banner banner-error" style="margin-top:8px">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                    ${esc(data.error || 'Evaluation failed.')}
-                </div>`;
+                formErr.innerHTML = '<div class="banner banner-error" style="margin-top:8px">' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>' +
+                    esc(data.error || 'Evaluation failed.') + '</div>';
             } else {
                 renderResults(data);
             }
         } catch (e) {
-            formErr.innerHTML = `<div class="banner banner-error" style="margin-top:8px">Could not reach server: ${esc(e.message)}</div>`;
+            formErr.innerHTML = '<div class="banner banner-error" style="margin-top:8px">Could not reach server: ' + esc(e.message) + '</div>';
         } finally {
             setRunning(false);
         }
@@ -582,57 +528,47 @@
 
     /* ── Render results ────────────────────────────────────────────── */
     function renderResults(data) {
-        const mrr      = data.mrr || 0;
-        const total    = data.totalCases || 0;
-        const results  = Array.isArray(data.results) ? data.results : [];
+        var mrr     = data.mrr || 0;
+        var total   = data.totalQueries || 0;
+        var hits    = data.queriesWithHit || 0;
+        var details = Array.isArray(data.details) ? data.details : [];
 
-        // Animate gauge
         animateGauge(mrr);
 
-        // Stats
-        const rank1     = results.filter(r => r.rank === 1).length;
-        const top3      = results.filter(r => r.rank > 0 && r.rank <= 3).length;
-        const notFound  = results.filter(r => r.rank === 0 || r.reciprocalRank === 0).length;
+        var rank1    = details.filter(function(r) { return r.rank === 1; }).length;
+        var notFound = details.filter(function(r) { return r.rank === 0; }).length;
         document.getElementById('stat-total').textContent    = total;
+        document.getElementById('stat-hits').textContent     = hits;
         document.getElementById('stat-rank1').textContent    = rank1;
-        document.getElementById('stat-top3').textContent     = top3;
         document.getElementById('stat-notfound').textContent = notFound;
 
-        // Rank distribution
-        renderRankDist(results);
+        renderRankDist(details);
+        renderBarChart(details);
+        renderTable(details);
 
-        // Bar chart
-        renderBarChart(results);
-
-        // Detail table
-        renderTable(results);
-
-        // Show results
-        const el = document.getElementById('results');
+        var el = document.getElementById('results');
         el.classList.add('visible');
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    /* ── Gauge animation ───────────────────────────────────────────── */
+    /* ── Gauge ─────────────────────────────────────────────────────── */
     function animateGauge(mrr) {
-        const arc = document.getElementById('gauge-arc');
-        const filled = mrr * GAUGE_MAX_ARC;
-        // Start from 0 then animate to final value
+        var arc    = document.getElementById('gauge-arc');
+        var filled = mrr * GAUGE_MAX_ARC;
         arc.style.transition = 'none';
-        arc.setAttribute('stroke-dasharray', `0 ${GAUGE_CIRC}`);
-        setTimeout(() => {
+        arc.setAttribute('stroke-dasharray', '0 ' + GAUGE_CIRC);
+        setTimeout(function() {
             arc.style.transition = 'stroke-dasharray 1s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease';
-            arc.setAttribute('stroke-dasharray', `${filled} ${GAUGE_CIRC - filled}`);
+            arc.setAttribute('stroke-dasharray', filled + ' ' + (GAUGE_CIRC - filled));
         }, 80);
 
-        const { color, label, bgColor } = mrrMeta(mrr);
-        arc.setAttribute('stroke', color);
+        var meta = mrrMeta(mrr);
+        arc.setAttribute('stroke', meta.color);
         document.getElementById('gauge-score').textContent = mrr.toFixed(2);
-
-        const banner = document.getElementById('gauge-banner');
-        banner.textContent = label;
-        banner.style.color = color;
-        banner.style.background = bgColor;
+        var banner = document.getElementById('gauge-banner');
+        banner.textContent       = meta.label;
+        banner.style.color       = meta.color;
+        banner.style.background  = meta.bgColor;
     }
 
     function mrrMeta(mrr) {
@@ -644,60 +580,52 @@
     }
 
     /* ── Rank distribution ─────────────────────────────────────────── */
-    function renderRankDist(results) {
-        const dist = {};
-        results.forEach(r => {
-            const k = r.rank === 0 ? 'NF' : String(r.rank);
+    function renderRankDist(details) {
+        var dist = {};
+        details.forEach(function(r) {
+            var k = r.rank === 0 ? 'NF' : String(r.rank);
             dist[k] = (dist[k] || 0) + 1;
         });
-
-        const rankColors = { '1':'#FFBD2F', '2':'var(--clr-primary)', '3':'var(--clr-success)' };
-        let html = '';
-
-        // Show rank 1 through max-rank
-        const maxRank = Math.max(...results.map(r => r.rank));
-        for (let i = 1; i <= Math.min(maxRank, 10); i++) {
-            const count = dist[String(i)] || 0;
-            const col = rankColors[String(i)] || 'var(--clr-on-surf-var)';
-            html += `<div class="rank-pill">
-                <div class="rank-pill-val" style="color:${col}">${count}</div>
-                <div class="rank-pill-label">Rank ${i}</div>
-            </div>`;
+        var rankColors = { '1': '#FFBD2F', '2': 'var(--clr-primary)', '3': 'var(--clr-success)' };
+        var html = '';
+        var maxRank = Math.max.apply(null, details.map(function(r) { return r.rank; }));
+        for (var i = 1; i <= Math.min(maxRank, 10); i++) {
+            var count = dist[String(i)] || 0;
+            var col   = rankColors[String(i)] || 'var(--clr-on-surf-var)';
+            html += '<div class="rank-pill"><div class="rank-pill-val" style="color:' + col + '">' + count +
+                    '</div><div class="rank-pill-label">Rank ' + i + '</div></div>';
         }
         if (dist['NF']) {
-            html += `<div class="rank-pill">
-                <div class="rank-pill-val" style="color:var(--clr-error)">${dist['NF']}</div>
-                <div class="rank-pill-label">Not Found</div>
-            </div>`;
+            html += '<div class="rank-pill"><div class="rank-pill-val" style="color:var(--clr-error)">' + dist['NF'] +
+                    '</div><div class="rank-pill-label">Not Found</div></div>';
         }
         document.getElementById('rank-dist').innerHTML = html || '—';
     }
 
     /* ── Bar chart ─────────────────────────────────────────────────── */
-    function renderBarChart(results) {
-        const chart = document.getElementById('bar-chart');
-        chart.innerHTML = results.map((r, i) => {
-            const rr  = r.reciprocalRank || 0;
-            const pct = (rr * 100).toFixed(2);
-            const col = rrColor(rr);
-            const shortQ = (r.query || '').length > 40
+    function renderBarChart(details) {
+        var chart = document.getElementById('bar-chart');
+        chart.innerHTML = details.map(function(r, i) {
+            var rr  = r.reciprocalRank || 0;
+            var pct = (rr * 100).toFixed(2);
+            var col = rrColor(rr);
+            var shortQ = (r.query || '').length > 40
                 ? (r.query || '').substring(0, 38) + '…'
                 : (r.query || '');
-            const innerLabel = pct > 15 ? (rr === 0 ? 'Not Found' : 'Rank ' + (r.rank || '?')) : '';
-            return `<div class="bar-row fade-up" style="animation-delay:${i * 60}ms">
-                <div class="bar-label" title="${esc(r.query || '')}">${esc(shortQ)}</div>
-                <div class="bar-track">
-                    <div class="bar-fill" style="width:0%;background:${col}" data-target="${pct}">
-                        ${innerLabel ? `<span>${innerLabel}</span>` : ''}
-                    </div>
-                </div>
-                <div class="bar-rr" style="color:${col}">${rr.toFixed(2)}</div>
-            </div>`;
+            var innerLabel = pct > 15 ? (rr === 0 ? 'Not Found' : 'Rank ' + (r.rank || '?')) : '';
+            return '<div class="bar-row fade-up" style="animation-delay:' + (i * 60) + 'ms">' +
+                '<div class="bar-label" title="' + esc(r.query || '') + '">' + esc(shortQ) + '</div>' +
+                '<div class="bar-track">' +
+                    '<div class="bar-fill" style="width:0%;background:' + col + '" data-target="' + pct + '">' +
+                        (innerLabel ? '<span>' + innerLabel + '</span>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<div class="bar-rr" style="color:' + col + '">' + rr.toFixed(2) + '</div>' +
+            '</div>';
         }).join('');
 
-        // Animate bars
-        setTimeout(() => {
-            chart.querySelectorAll('.bar-fill').forEach(bar => {
+        setTimeout(function() {
+            chart.querySelectorAll('.bar-fill').forEach(function(bar) {
                 bar.style.transition = 'width 0.7s cubic-bezier(0.4,0,0.2,1)';
                 bar.style.width = bar.dataset.target + '%';
             });
@@ -705,42 +633,52 @@
     }
 
     /* ── Detail table ──────────────────────────────────────────────── */
-    function renderTable(results) {
-        document.getElementById('detail-tbody').innerHTML = results.map((r, i) => {
-            const rr   = r.reciprocalRank || 0;
-            const rank = r.rank || 0;
-            const col  = rrColor(rr);
+    function renderTable(details) {
+        document.getElementById('detail-tbody').innerHTML = details.map(function(r) {
+            var rr   = r.reciprocalRank || 0;
+            var rank = r.rank || 0;
+            var col  = rrColor(rr);
+            var rankCls = rank === 0 ? 'rank-0' : rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-n';
+            var rankDisplay = rank === 0 ? '—' : '#' + rank;
 
-            const rankBadgeCls = rank === 0 ? 'rank-0' : rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-n';
-            const rankDisplay  = rank === 0 ? '—' : '#' + rank;
+            // Retrieved codes chips (up to 5, highlight the matching one)
+            var codes     = Array.isArray(r.retrievedCodes) ? r.retrievedCodes : [];
+            var expected  = (r.expectedCode || '').trim().toLowerCase().replace(/[\s\-–]/g, '');
+            var codeHtml;
+            if (codes.length === 0) {
+                codeHtml = '<span class="code-chip code-chip-none">none retrieved</span>';
+            } else {
+                codeHtml = codes.slice(0, 5).map(function(c) {
+                    var norm = (c || '').trim().toLowerCase().replace(/[\s\-–]/g, '');
+                    var cls  = norm === expected ? 'code-chip-match' : 'code-chip-other';
+                    return '<span class="code-chip ' + cls + '">' + esc(c || '—') + '</span>';
+                }).join('');
+                if (codes.length > 5) {
+                    codeHtml += '<span class="code-chip code-chip-other">+' + (codes.length - 5) + ' more</span>';
+                }
+            }
 
-            return `<tr>
-                <td><span class="rank-badge ${rankBadgeCls}">${rankDisplay}</span></td>
-                <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-                    title="${esc(r.query || '')}">${esc(r.query || '—')}</td>
-                <td><code style="background:rgba(190,194,255,0.1);color:var(--clr-primary);padding:2px 8px;border-radius:4px;font-size:12px">${esc(r.expectedServiceCode || '—')}</code></td>
-                <td><span class="chip chip-surface" style="font-size:10px">${(r.language || 'en').toUpperCase()}</span></td>
-                <td>
-                    <div class="rr-bar-inline">
-                        <div class="rr-track-sm">
-                            <div class="rr-fill-sm" style="width:${(rr * 100).toFixed(1)}%;background:${col}"></div>
-                        </div>
-                        <span class="rr-val-sm" style="color:${col}">${rr.toFixed(3)}</span>
-                        ${rr === 0 ? '<span class="chip chip-error" style="font-size:10px">Not Found</span>' : ''}
-                        ${rr === 1 ? '<span class="chip chip-success" style="font-size:10px">Perfect</span>' : ''}
-                    </div>
-                </td>
-            </tr>`;
+            return '<tr>' +
+                '<td><span class="rank-badge ' + rankCls + '">' + rankDisplay + '</span></td>' +
+                '<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(r.query || '') + '">' + esc(r.query || '—') + '</td>' +
+                '<td><code style="background:rgba(190,194,255,0.1);color:var(--clr-primary);padding:2px 8px;border-radius:4px;font-size:12px">' + esc(r.expectedCode || '—') + '</code></td>' +
+                '<td><div class="code-chips">' + codeHtml + '</div></td>' +
+                '<td><div class="rr-bar-inline">' +
+                    '<div class="rr-track-sm"><div class="rr-fill-sm" style="width:' + (rr * 100).toFixed(1) + '%;background:' + col + '"></div></div>' +
+                    '<span class="rr-val-sm" style="color:' + col + '">' + rr.toFixed(3) + '</span>' +
+                    (rr === 0 ? '<span class="chip chip-error" style="font-size:10px">Not Found</span>' : '') +
+                    (rr === 1 ? '<span class="chip chip-success" style="font-size:10px">Perfect</span>' : '') +
+                '</div></td>' +
+            '</tr>';
         }).join('');
     }
 
-    /* ── Color helpers ─────────────────────────────────────────────── */
+    /* ── Helpers ───────────────────────────────────────────────────── */
     function rrColor(rr) {
-        if (rr === 0)   return '#FFB4AB';   // not found
-        if (rr >= 0.5)  return '#79DC79';   // rank 1–2
-        if (rr >= 0.25) return '#FFBD2F';   // rank 3–4
-        if (rr > 0)     return '#FF8A65';   // rank 5+
-        return '#FFB4AB';
+        if (rr === 0)   return '#FFB4AB';
+        if (rr >= 0.5)  return '#79DC79';
+        if (rr >= 0.25) return '#FFBD2F';
+        return '#FF8A65';
     }
 
     function esc(s) {
@@ -748,9 +686,9 @@
         return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    /* ── Boot: add 2 default rows ──────────────────────────────────── */
-    addRow('vehicle registration renewal', 'SVC-1023', 'en');
-    addRow('تجديد رخصة القيادة', 'SVC-2017', 'ar');
+    /* ── Boot: pre-load the two provided test queries ──────────────── */
+    addRow('What are the requirements for immediate input validation in digital forms?', '1.2.3', 'en');
+    addRow('ما هي متطلبات التحقق الفوري من المدخلات في النماذج الرقمية؟', '1.2.3', 'ar');
 </script>
 </body>
 </html>

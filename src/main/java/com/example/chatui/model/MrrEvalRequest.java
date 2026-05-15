@@ -12,7 +12,7 @@ public record MrrEvalRequest(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record TestCase(
             String query,
-            String expectedServiceCode,
-            String language
+            String expectedCodeNumber,   // e.g. "1.2.3"
+            String language              // "en" | "ar"
     ) {}
 }

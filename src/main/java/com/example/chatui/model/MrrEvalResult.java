@@ -7,15 +7,16 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record MrrEvalResult(
         double mrr,
-        int totalCases,
-        List<CaseResult> results
+        int totalQueries,
+        int queriesWithHit,
+        List<QueryResult> details
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record CaseResult(
+    public record QueryResult(
             String query,
-            String expectedServiceCode,
-            String language,
-            int rank,
-            double reciprocalRank
+            String expectedCode,
+            int rank,               // 1-based; 0 = not found in top-K
+            double reciprocalRank,
+            List<String> retrievedCodes
     ) {}
 }
