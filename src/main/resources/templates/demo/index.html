@@ -693,9 +693,16 @@
 
   <script>
     /* ── Chat widget state ─────────────────────────────────── */
-    let wConversationId = crypto.randomUUID();
-    let wLoading = false;
-    let wMinimized = false;
+    function genUUID() {
+      if (crypto && crypto.randomUUID) return crypto.randomUUID();
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+    var wConversationId = genUUID();
+    var wLoading = false;
+    var wMinimized = false;
 
     function openChat() {
       const w = document.getElementById('chat-widget');
@@ -742,7 +749,7 @@
 
     /* ── Conversation helpers ───────────────────────────────── */
     function wNewConversation() {
-      wConversationId = crypto.randomUUID();
+      wConversationId = genUUID();
       const msgs = document.getElementById('w-messages');
       msgs.innerHTML = `
         <div class="chat-empty" id="w-empty">
