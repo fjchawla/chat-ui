@@ -183,7 +183,7 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--clr-on-surf-faint)">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
                     </svg>
-                    Ingestion runs synchronously — results appear when processing is complete.
+                    Upload returns immediately — ingestion is polled until DONE or FAILED.
                 </div>
 
             </div>
@@ -236,11 +236,14 @@
         resultWrap.classList.remove('visible');
     }
 
+    var pollTimer = null;
+
     async function uploadFile() {
         if (!selectedFile) return;
         uploadBtn.disabled = true;
         bannerWrap.innerHTML = '';
         resultWrap.classList.remove('visible');
+        setProgressText('Uploading…');
         progressWrap.classList.add('visible');
 
         const form = new FormData();
@@ -252,20 +255,65 @@
 
             if (!res.ok) {
                 showBanner('error', data.error || 'Upload failed.');
+                finishUpload();
+            } else if (res.status === 202 || data.status === 'PROCESSING') {
+                setProgressText('Processing… checking every 3 s');
+                startPolling(data.jobId);
             } else if (data.status === 'FAILED') {
                 showBanner('error', 'Ingestion failed: ' + (data.errorMessage || 'Unknown error'));
                 renderResult(data);
+                finishUpload();
             } else {
                 showBanner('success', 'Document ingested successfully.');
                 renderResult(data);
                 clearFile();
+                finishUpload();
             }
         } catch (e) {
             showBanner('error', 'Upload error: ' + e.message);
-        } finally {
-            progressWrap.classList.remove('visible');
-            uploadBtn.disabled = false;
+            finishUpload();
         }
+    }
+
+    function startPolling(jobId) {
+        pollTimer = setTimeout(function poll() {
+            fetch('/api/ingest/status/' + jobId)
+                .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                .then(({ ok, data }) => {
+                    if (!ok) {
+                        showBanner('error', data.error || 'Failed to check job status.');
+                        finishUpload();
+                        return;
+                    }
+                    setProgressText('Processing… status: ' + (data.status || '?'));
+                    if (data.status === 'DONE') {
+                        showBanner('success', 'Document ingested successfully.');
+                        renderResult(data);
+                        clearFile();
+                        finishUpload();
+                    } else if (data.status === 'FAILED') {
+                        showBanner('error', 'Ingestion failed: ' + (data.errorMessage || 'Unknown error'));
+                        renderResult(data);
+                        finishUpload();
+                    } else {
+                        pollTimer = setTimeout(poll, 3000);
+                    }
+                })
+                .catch(e => {
+                    showBanner('error', 'Polling error: ' + e.message);
+                    finishUpload();
+                });
+        }, 3000);
+    }
+
+    function finishUpload() {
+        clearTimeout(pollTimer);
+        progressWrap.classList.remove('visible');
+        uploadBtn.disabled = false;
+    }
+
+    function setProgressText(msg) {
+        progressWrap.querySelector('div:last-child').textContent = msg;
     }
 
     function showBanner(type, msg) {

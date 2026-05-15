@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +85,9 @@ public class WebController {
         }
         try {
             IngestionStatus status = ingestionClient.upload(file);
-            return ResponseEntity.ok(status);
+            // Backend returns 202 Accepted when ingestion is async (status == PROCESSING)
+            int httpStatus = "PROCESSING".equals(status.status()) ? 202 : 200;
+            return ResponseEntity.status(httpStatus).body(status);
         } catch (FeignException.ServiceUnavailable e) {
             return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
         } catch (Exception e) {
@@ -148,6 +152,29 @@ public class WebController {
                 )
             );
             return ResponseEntity.ok(rows);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Status fetch failed: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/api/ingest/status/{jobId}")
+    @ResponseBody
+    public ResponseEntity<?> ingestionStatusById(@PathVariable Long jobId) {
+        try {
+            Optional<IngestionStatus> row = jdbc.query(
+                "SELECT id, source_file, status, chunks_count, error_message " +
+                "FROM ingestion_log WHERE id = ?",
+                (rs, i) -> new IngestionStatus(
+                    rs.getLong("id"),
+                    rs.getString("source_file"),
+                    rs.getString("status"),
+                    rs.getObject("chunks_count", Integer.class),
+                    rs.getString("error_message")
+                ),
+                jobId
+            ).stream().findFirst();
+            return row.<ResponseEntity<?>>map(ResponseEntity::ok)
+                      .orElseGet(() -> ResponseEntity.status(404).body(Map.of("error", "Job not found.")));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Status fetch failed: " + e.getMessage()));
         }
