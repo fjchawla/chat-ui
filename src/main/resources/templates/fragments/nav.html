@@ -3,36 +3,68 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <div th:fragment="navbar(activePage)">
+
+    <!-- Top App Bar -->
     <div class="top-bar">
-        <div class="navbar-brand">
-            <div class="brand-dot">💬</div>
-            ServiceCodeChat
-        </div>
-        <div style="display:flex;align-items:center;gap:0.75rem">
-            <span class="user-info">Signed in as <strong sec:authentication="name">user</strong></span>
+        <a class="brand" href="/">
+            <div class="brand-mark">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+                          fill="var(--clr-on-primary-container)"/>
+                    <circle cx="8" cy="11" r="1.2" fill="var(--clr-primary-container)"/>
+                    <circle cx="12" cy="11" r="1.2" fill="var(--clr-primary-container)"/>
+                    <circle cx="16" cy="11" r="1.2" fill="var(--clr-primary-container)"/>
+                </svg>
+            </div>
+            <span class="brand-name">ServiceCodeChat</span>
+        </a>
+        <div class="top-bar-end">
+            <span class="user-label" sec:authorize="isAuthenticated()">
+                Signed in as <strong sec:authentication="name">user</strong>
+            </span>
             <form th:action="@{/logout}" method="post" style="margin:0">
-                <button type="submit" class="btn-logout">Sign out</button>
+                <button type="submit" class="btn-logout">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                    Sign out
+                </button>
             </form>
         </div>
     </div>
-    <div class="tab-bar">
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs-bar">
         <a th:href="@{/}" th:class="${activePage == 'chat'} ? 'tab active' : 'tab'">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path th:if="${activePage == 'chat'}"
+                      d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                <path th:unless="${activePage == 'chat'}"
+                      d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM20 16H5.17L4 17.17V4h16v12z"/>
+            </svg>
             Chat
         </a>
         <a th:href="@{/ingest/upload}" th:class="${activePage == 'upload'} ? 'tab active' : 'tab'">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
+            </svg>
             Upload Document
         </a>
         <a th:href="@{/ingest/trigger}" th:class="${activePage == 'trigger'} ? 'tab active' : 'tab'">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path th:if="${activePage == 'trigger'}"  d="M8 5v14l11-7z"/>
+                <path th:unless="${activePage == 'trigger'}" d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+            </svg>
             Trigger Ingestion
         </a>
         <a th:href="@{/ingest/status}" th:class="${activePage == 'status'} ? 'tab active' : 'tab'">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V7h-2v2zm0 8h2v-6h-2v6zm1-16C6.48 1 2 5.48 2 11s4.48 10 10 10 10-4.48 10-10S17.52 1 12 1zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+            </svg>
             Ingestion Status
         </a>
     </div>
+
 </div>
 </body>
 </html>

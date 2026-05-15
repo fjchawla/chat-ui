@@ -5,275 +5,189 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Upload Document — ServiceCodeChat</title>
+    <link rel="stylesheet" href="/css/main.css"/>
     <style>
-        :root {
-            --bg-base:    #0f172a;
-            --bg-surface: #1e293b;
-            --bg-raised:  #273549;
-            --border:     #334155;
-            --text-primary:   #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted:     #64748b;
-            --accent:         #6366f1;
-            --accent-hover:   #4f46e5;
-            --success:        #22c55e;
-            --error:          #ef4444;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: var(--bg-base);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ── Shared Nav ─────────────────────────────────────────────── */
-        .top-bar {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 1.25rem;
-            height: 56px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .navbar-brand {
-            display: flex; align-items: center; gap: 0.625rem;
-            font-weight: 700; font-size: 1rem; color: var(--text-primary);
-        }
-        .brand-dot {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-        }
-        .user-info { font-size: 0.8rem; color: var(--text-secondary); }
-        .btn-logout {
-            font-size: 0.8rem; padding: 0.3rem 0.8rem; border-radius: 6px;
-            border: 1px solid var(--border); background: transparent;
-            color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
-        }
-        .btn-logout:hover { border-color: var(--error); color: var(--error); }
-        .tab-bar {
-            background: var(--bg-surface); border-bottom: 1px solid var(--border);
-            padding: 0 1.25rem; display: flex; gap: 0.125rem; flex-shrink: 0;
-        }
-        .tab {
-            display: flex; align-items: center; gap: 0.375rem;
-            padding: 0 0.875rem; height: 40px;
-            font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary);
-            text-decoration: none; border-bottom: 2px solid transparent;
-            transition: color 0.15s, border-color 0.15s; white-space: nowrap;
-        }
-        .tab:hover { color: var(--text-primary); }
-        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-        /* ── Page layout ─────────────────────────────────────────────── */
-        .page-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 3rem 1.5rem;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            max-width: 560px;
-        }
-        .page-header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.375rem;
-        }
-        .page-header p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* ── Upload card ─────────────────────────────────────────────── */
-        .upload-card {
-            width: 100%;
-            max-width: 560px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
+        /* ── Drop zone ──────────────────────────────────────────────── */
         .drop-zone {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 3rem 2rem;
+            border: 2px dashed var(--clr-outline-var);
+            border-radius: var(--r-lg);
+            padding: 48px 32px;
             text-align: center;
             cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
+            transition: border-color var(--dur-m) var(--ease),
+                        background   var(--dur-m) var(--ease);
+            position: relative;
         }
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: var(--accent);
-            background: rgba(99,102,241,0.05);
+        .drop-zone:hover, .drop-zone.over {
+            border-color: var(--clr-primary);
+            background: rgba(190,194,255,0.04);
         }
-        .drop-icon {
-            width: 56px; height: 56px;
-            background: rgba(99,102,241,0.1);
-            border-radius: 12px;
+        .drop-zone-icon {
+            width: 64px; height: 64px; margin: 0 auto 16px;
+            background: var(--clr-surf-high);
+            border: 1px solid var(--clr-outline-var);
+            border-radius: var(--r-xl);
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            margin: 0 auto 1rem;
+            transition: background var(--dur-m), border-color var(--dur-m);
         }
-        .drop-title { font-size: 0.9375rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
-        .drop-sub { font-size: 0.8rem; color: var(--text-muted); }
-        .drop-sub span { color: var(--accent); }
+        .drop-zone:hover .drop-zone-icon, .drop-zone.over .drop-zone-icon {
+            background: rgba(190,194,255,0.1);
+            border-color: var(--clr-primary);
+        }
+        .drop-zone-title {
+            font-size: 16px; font-weight: 600;
+            color: var(--clr-on-surface); margin-bottom: 4px;
+        }
+        .drop-zone-sub { font-size: 13.5px; color: var(--clr-on-surf-var); }
+        .drop-zone-sub span { color: var(--clr-primary); font-weight: 500; }
         #file-input { display: none; }
 
-        .file-info {
-            display: none;
-            background: var(--bg-raised);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
+        /* ── File info row ──────────────────────────────────────────── */
+        .file-row {
             display: none;
             align-items: center;
-            gap: 0.75rem;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--clr-surf-high);
+            border: 1px solid var(--clr-outline-var);
+            border-radius: var(--r-md);
         }
-        .file-info.visible { display: flex; }
-        .file-icon {
-            width: 36px; height: 36px; flex-shrink: 0;
-            background: rgba(99,102,241,0.12);
-            border-radius: 8px;
+        .file-row.visible { display: flex; }
+        .file-thumb {
+            width: 40px; height: 40px; flex-shrink: 0;
+            background: rgba(190,194,255,0.1);
+            border-radius: var(--r-sm);
             display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
         }
-        .file-name { font-size: 0.85rem; color: var(--text-primary); word-break: break-all; flex: 1; }
-        .file-size { font-size: 0.75rem; color: var(--text-muted); flex-shrink: 0; }
+        .file-info { flex: 1; min-width: 0; }
+        .file-name { font-size: 14px; font-weight: 500; color: var(--clr-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-size { font-size: 12px; color: var(--clr-on-surf-faint); margin-top: 1px; }
         .file-clear {
-            background: none; border: none; color: var(--text-muted);
-            cursor: pointer; padding: 0.25rem; border-radius: 4px;
-            transition: color 0.15s; font-size: 1rem; line-height: 1;
+            all: unset; cursor: pointer;
+            width: 32px; height: 32px; border-radius: var(--r-full);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--clr-on-surf-faint); flex-shrink: 0;
+            transition: background var(--dur-s), color var(--dur-s);
         }
-        .file-clear:hover { color: var(--error); }
+        .file-clear:hover { background: rgba(255,180,171,0.12); color: var(--clr-error); }
 
-        .btn-upload {
-            background: var(--accent);
-            color: white; border: none; border-radius: 10px;
-            padding: 0.7rem 1.25rem;
-            font-size: 0.875rem; font-weight: 600;
-            width: 100%; cursor: pointer;
-            transition: background 0.15s, opacity 0.15s;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-        }
-        .btn-upload:hover:not(:disabled) { background: var(--accent-hover); }
-        .btn-upload:disabled { opacity: 0.45; cursor: not-allowed; }
+        /* ── Progress ───────────────────────────────────────────────── */
+        .progress-wrap { display: none; }
+        .progress-wrap.visible { display: block; }
 
-        .upload-status {
-            border-radius: 10px;
-            padding: 0.875rem 1rem;
-            font-size: 0.85rem;
-            display: none;
-        }
-        .upload-status.visible { display: block; }
-        .upload-status.loading {
-            background: rgba(99,102,241,0.1);
-            border: 1px solid rgba(99,102,241,0.25);
-            color: #a5b4fc;
-        }
-        .upload-status.success {
-            background: rgba(34,197,94,0.1);
-            border: 1px solid rgba(34,197,94,0.25);
-            color: #86efac;
-        }
-        .upload-status.error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #fca5a5;
-        }
-
+        /* ── Result card ────────────────────────────────────────────── */
+        .result-wrap { display: none; }
+        .result-wrap.visible { display: block; }
         .result-card {
-            display: none;
-            background: var(--bg-raised);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 1rem;
-            font-size: 0.85rem;
+            background: var(--clr-surf-high);
+            border: 1px solid var(--clr-outline-var);
+            border-radius: var(--r-md);
+            overflow: hidden;
         }
-        .result-card.visible { display: block; }
-        .result-row { display: flex; justify-content: space-between; padding: 0.3rem 0; }
-        .result-row:not(:last-child) { border-bottom: 1px solid rgba(51,65,85,0.5); }
-        .result-label { color: var(--text-muted); font-size: 0.775rem; text-transform: uppercase; letter-spacing: 0.05em; }
-        .result-value { color: var(--text-primary); font-weight: 500; text-align: right; }
-        .status-badge {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
+        .result-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 11px 16px;
+            font-size: 13.5px;
         }
-        .status-badge.done    { background: rgba(34,197,94,0.15); color: #86efac; }
-        .status-badge.failed  { background: rgba(239,68,68,0.15); color: #fca5a5; }
-        .status-badge.running { background: rgba(99,102,241,0.15); color: #a5b4fc; }
+        .result-row:not(:last-child) { border-bottom: 1px solid var(--clr-outline-var); }
+        .result-key { color: var(--clr-on-surf-faint); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+        .result-val { color: var(--clr-on-surface); font-weight: 500; text-align: right; }
 
-        .spinner {
-            width: 16px; height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            flex-shrink: 0;
+        /* Full-width upload button */
+        .btn-upload-full {
+            width: 100%; height: 44px;
+            border-radius: var(--r-full);
+            font-size: 14.5px; font-weight: 600;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .hint {
-            font-size: 0.775rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            text-align: center;
+        /* Hint */
+        .hint-row {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 12.5px; color: var(--clr-on-surf-faint);
+            justify-content: center;
         }
     </style>
 </head>
-<body>
+<body class="page-root">
 
 <div th:replace="~{fragments/nav :: navbar('upload')}"></div>
 
-<div class="page-content">
-    <div class="page-header">
-        <h1>Upload Document</h1>
-        <p>Upload a PDF to add its content to the knowledge base. Large documents may take several minutes to ingest.</p>
-    </div>
+<div class="page-scroll">
+    <div class="page-content">
+        <div class="page-max" style="max-width:600px">
 
-    <div class="upload-card">
+            <div class="page-header">
+                <h1 class="page-title">Upload Document</h1>
+                <p class="page-sub">Add a PDF to the knowledge base. The document will be chunked and indexed immediately.</p>
+            </div>
 
-        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-            <div class="drop-icon">📄</div>
-            <div class="drop-title">Drop your PDF here</div>
-            <div class="drop-sub">or <span>click to browse</span> — PDF only, max 200 MB</div>
-            <input type="file" id="file-input" accept=".pdf"/>
+            <!-- Drop zone -->
+            <div style="display:flex;flex-direction:column;gap:16px">
+
+                <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                    <div class="drop-zone-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--clr-primary)">
+                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM12 17l-4-4h2.5v-3h3v3H16l-4 4z"/>
+                        </svg>
+                    </div>
+                    <div class="drop-zone-title">Drop your PDF here</div>
+                    <div class="drop-zone-sub">or <span>click to browse</span> · PDF only · max 200 MB</div>
+                    <input type="file" id="file-input" accept=".pdf"/>
+                </div>
+
+                <!-- Selected file -->
+                <div class="file-row" id="file-row">
+                    <div class="file-thumb">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--clr-primary)">
+                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                        </svg>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name" id="file-name"></div>
+                        <div class="file-size" id="file-size"></div>
+                    </div>
+                    <button class="file-clear" onclick="clearFile()" title="Remove file">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Upload button -->
+                <button class="btn btn-filled btn-upload-full" id="upload-btn" disabled onclick="uploadFile()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+                    Upload &amp; Ingest
+                </button>
+
+                <!-- Progress indicator -->
+                <div class="progress-wrap" id="progress-wrap">
+                    <div class="linear-progress"><div class="linear-progress-bar"></div></div>
+                    <div style="font-size:13px;color:var(--clr-on-surf-var);margin-top:8px;text-align:center">
+                        Uploading and ingesting… this may take several minutes for large documents.
+                    </div>
+                </div>
+
+                <!-- Banner feedback -->
+                <div id="banner-wrap"></div>
+
+                <!-- Result card -->
+                <div class="result-wrap" id="result-wrap">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--clr-on-surf-faint);margin-bottom:10px">
+                        Ingestion Result
+                    </div>
+                    <div class="result-card" id="result-card"></div>
+                </div>
+
+                <!-- Hint -->
+                <div class="hint-row">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--clr-on-surf-faint)">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                    Ingestion runs synchronously — results appear when processing is complete.
+                </div>
+
+            </div>
         </div>
-
-        <div class="file-info" id="file-info">
-            <div class="file-icon">📎</div>
-            <div class="file-name" id="file-name"></div>
-            <div class="file-size" id="file-size"></div>
-            <button class="file-clear" onclick="clearFile()" title="Remove">✕</button>
-        </div>
-
-        <button class="btn-upload" id="upload-btn" disabled onclick="uploadFile()">
-            Upload &amp; Ingest
-        </button>
-
-        <div class="upload-status" id="upload-status"></div>
-        <div class="result-card"  id="result-card"></div>
-
-        <p class="hint">Ingestion runs synchronously — the page will show results when complete.</p>
     </div>
 </div>
 
@@ -281,53 +195,53 @@
     const dropZone  = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const uploadBtn = document.getElementById('upload-btn');
-    const fileInfo  = document.getElementById('file-info');
+    const fileRow   = document.getElementById('file-row');
     const fileNameEl = document.getElementById('file-name');
     const fileSizeEl = document.getElementById('file-size');
-    const statusEl  = document.getElementById('upload-status');
-    const resultEl  = document.getElementById('result-card');
+    const progressWrap = document.getElementById('progress-wrap');
+    const bannerWrap   = document.getElementById('banner-wrap');
+    const resultWrap   = document.getElementById('result-wrap');
+    const resultCard   = document.getElementById('result-card');
 
     let selectedFile = null;
 
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length) selectFile(fileInput.files[0]);
-    });
-    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) selectFile(fileInput.files[0]); });
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
     dropZone.addEventListener('drop', e => {
-        e.preventDefault(); dropZone.classList.remove('drag-over');
-        if (e.dataTransfer.files[0]) selectFile(e.dataTransfer.files[0]);
+        e.preventDefault(); dropZone.classList.remove('over');
+        const f = e.dataTransfer.files[0];
+        if (f) selectFile(f);
     });
 
-    function selectFile(file) {
-        if (!file.name.toLowerCase().endsWith('.pdf')) {
-            showStatus('error', '✗ Only PDF files are accepted.');
+    function selectFile(f) {
+        if (!f.name.toLowerCase().endsWith('.pdf')) {
+            showBanner('error', 'Only PDF files are accepted.');
             return;
         }
-        selectedFile = file;
-        fileNameEl.textContent = file.name;
-        fileSizeEl.textContent = formatBytes(file.size);
-        fileInfo.classList.add('visible');
+        selectedFile = f;
+        fileNameEl.textContent = f.name;
+        fileSizeEl.textContent = fmtBytes(f.size);
+        fileRow.classList.add('visible');
         uploadBtn.disabled = false;
-        hideStatus();
-        resultEl.classList.remove('visible');
+        bannerWrap.innerHTML = '';
+        resultWrap.classList.remove('visible');
     }
 
     function clearFile() {
-        selectedFile = null;
-        fileInput.value = '';
-        fileInfo.classList.remove('visible');
+        selectedFile = null; fileInput.value = '';
+        fileRow.classList.remove('visible');
         uploadBtn.disabled = true;
-        hideStatus();
-        resultEl.classList.remove('visible');
+        bannerWrap.innerHTML = '';
+        resultWrap.classList.remove('visible');
     }
 
     async function uploadFile() {
         if (!selectedFile) return;
-
-        showStatus('loading', null);
         uploadBtn.disabled = true;
-        resultEl.classList.remove('visible');
+        bannerWrap.innerHTML = '';
+        resultWrap.classList.remove('visible');
+        progressWrap.classList.add('visible');
 
         const form = new FormData();
         form.append('file', selectedFile);
@@ -337,58 +251,56 @@
             const data = await res.json();
 
             if (!res.ok) {
-                showStatus('error', '✗ ' + (data.error || 'Upload failed.'));
+                showBanner('error', data.error || 'Upload failed.');
             } else if (data.status === 'FAILED') {
-                showStatus('error', '✗ Ingestion failed: ' + (data.errorMessage || 'Unknown error'));
+                showBanner('error', 'Ingestion failed: ' + (data.errorMessage || 'Unknown error'));
+                renderResult(data);
             } else {
-                showStatus('success', '✓ Document ingested successfully.');
+                showBanner('success', 'Document ingested successfully.');
                 renderResult(data);
                 clearFile();
             }
         } catch (e) {
-            showStatus('error', '✗ Upload error: ' + e.message);
+            showBanner('error', 'Upload error: ' + e.message);
         } finally {
+            progressWrap.classList.remove('visible');
             uploadBtn.disabled = false;
         }
     }
 
-    function showStatus(type, msg) {
-        statusEl.className = 'upload-status visible ' + type;
-        if (type === 'loading') {
-            statusEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem"><div class="spinner"></div>Uploading and ingesting… this may take several minutes.</div>';
-        } else {
-            statusEl.textContent = msg;
-        }
-    }
-
-    function hideStatus() {
-        statusEl.className = 'upload-status';
+    function showBanner(type, msg) {
+        const icons = {
+            success: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/>',
+            error:   '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>'
+        };
+        bannerWrap.innerHTML = `<div class="banner banner-${type}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">${icons[type] || ''}</svg>
+            ${esc(msg)}
+        </div>`;
     }
 
     function renderResult(d) {
-        const statusCls = (d.status || 'done').toLowerCase();
-        resultEl.innerHTML = `
-            <div class="result-row">
-                <span class="result-label">Status</span>
-                <span class="result-value"><span class="status-badge ${statusCls}">${d.status || 'DONE'}</span></span>
-            </div>
-            ${d.jobId != null ? `<div class="result-row"><span class="result-label">Job ID</span><span class="result-value">#${d.jobId}</span></div>` : ''}
-            ${d.sourceFile ? `<div class="result-row"><span class="result-label">File</span><span class="result-value" style="font-size:0.8rem">${escHtml(d.sourceFile)}</span></div>` : ''}
-            ${d.chunksIngested != null ? `<div class="result-row"><span class="result-label">Chunks Ingested</span><span class="result-value">${d.chunksIngested}</span></div>` : ''}
-            ${d.errorMessage ? `<div class="result-row"><span class="result-label">Error</span><span class="result-value" style="color:#fca5a5;font-size:0.8rem">${escHtml(d.errorMessage)}</span></div>` : ''}
-        `;
-        resultEl.classList.add('visible');
+        const statusCls = { DONE:'chip-success', FAILED:'chip-error' }[d.status] || 'chip-surface';
+        const rows = [
+            d.status      ? `<div class="result-row"><span class="result-key">Status</span><span class="result-val"><span class="chip ${statusCls}">${d.status}</span></span></div>` : '',
+            d.jobId!=null ? `<div class="result-row"><span class="result-key">Job ID</span><span class="result-val">#${d.jobId}</span></div>` : '',
+            d.sourceFile  ? `<div class="result-row"><span class="result-key">File</span><span class="result-val" style="font-size:12.5px;max-width:260px;overflow:hidden;text-overflow:ellipsis">${esc(d.sourceFile)}</span></div>` : '',
+            d.chunksIngested!=null ? `<div class="result-row"><span class="result-key">Chunks Ingested</span><span class="result-val">${d.chunksIngested}</span></div>` : '',
+            d.errorMessage ? `<div class="result-row"><span class="result-key">Error</span><span class="result-val" style="color:var(--clr-error);font-size:13px">${esc(d.errorMessage)}</span></div>` : ''
+        ].filter(Boolean).join('');
+
+        resultCard.innerHTML = rows;
+        resultWrap.classList.add('visible');
     }
 
-    function formatBytes(b) {
+    function fmtBytes(b) {
         if (b < 1024) return b + ' B';
         if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
         return (b / 1048576).toFixed(1) + ' MB';
     }
-
-    function escHtml(str) {
-        if (!str) return '';
-        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    function esc(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 </script>
 </body>
