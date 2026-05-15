@@ -165,7 +165,9 @@ public class WebController {
         try {
             List<IngestionStatus> rows = jdbc.query(
                 "SELECT id, source_file, status, chunks_count, error_message " +
-                "FROM ingestion_log ORDER BY started_at DESC",
+                "FROM (SELECT DISTINCT ON (source_file) id, source_file, status, chunks_count, error_message " +
+                "      FROM ingestion_log ORDER BY source_file, id DESC) latest " +
+                "ORDER BY id DESC",
                 (rs, i) -> new IngestionStatus(
                     rs.getLong("id"),
                     rs.getString("source_file"),
