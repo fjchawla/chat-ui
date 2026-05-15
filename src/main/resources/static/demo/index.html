@@ -5,380 +5,635 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UAE Government Services Code</title>
   <meta name="description" content="The official UAE Government Services Code — the mandatory federal reference framework for government service excellence." />
-
   <link rel="stylesheet" href="/demo/style.css" />
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- Top accent bar -->
+  <div class="accent-bar"></div>
+
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="container navbar-inner">
-
       <a class="navbar-brand" href="#">
         <img src="/manus-storage/uae-gov-logo_4e84861d.png" alt="UAE Government" />
-        <div class="navbar-brand-text">
-          <span class="gov">Government of United Arab Emirates</span>
-          <span class="title">Government Services Code</span>
-        </div>
       </a>
 
-      <div class="navbar-links">
-        <a class="nav-link" href="#">Home</a>
-        <a class="nav-link" href="#">Browse the Code</a>
-        <a class="nav-link" href="#">Domains</a>
-        <a class="nav-link" href="#">Glossary</a>
+      <div class="nav-links">
+        <a class="nav-link active" href="#">Home</a>
+        <a class="nav-link" href="#">The Code</a>
+        <a class="nav-link" href="#">Search</a>
+        <a class="nav-link" href="#">Ask AI</a>
         <a class="nav-link" href="#">Resources</a>
-        <a class="nav-link" href="#">About the Code</a>
+        <a class="nav-link" href="#">Updates</a>
+        <a class="nav-link" href="#">About</a>
       </div>
 
       <div class="navbar-end">
-        <span class="badge-demo">Demo Version</span>
-        <button class="btn-nav-ghost">🤖 AI Assistant</button>
+        <span class="arabic-badge">عربي</span>
+        <button class="hamburger" aria-label="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+        </button>
       </div>
-
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-texture"></div>
     <div class="container">
       <div class="hero-inner">
 
+        <!-- Left: copy -->
         <div>
-          <div class="hero-badge">
-            <span class="dot"></span>
-            Code Version 1.0 · Now in Effect
-          </div>
+          <div class="hero-badge">UAE Government Services Code</div>
 
-          <h1 class="hero-heading">
-            Get Instant,<br>
-            <span class="highlight">Cited Answers.</span>
+          <h1>
+            The Federal Reference for<br>
+            <span>Government Service Excellence</span>
           </h1>
 
-          <p class="hero-sub">
-            A unified, mandatory framework setting the standards for how all UAE federal government entities design, deliver, and continuously improve services for residents, citizens, and businesses.
+          <p class="hero-desc">
+            A unified, mandatory framework setting the standards for how all UAE federal entities design, deliver, and continuously improve services for residents, citizens, and businesses.
           </p>
 
-          <div class="hero-actions">
-            <a class="btn-primary" href="#">
+          <div class="hero-btns">
+            <a class="btn-hero-primary" href="#">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
               Browse the Code
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
-            <a class="btn-outline" href="#">Download PDF</a>
-            <a class="btn-outline" href="#">🤖 Ask the Code</a>
+            <a class="btn-hero-outline" href="#">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+              Ask AI
+            </a>
           </div>
         </div>
 
-        <div class="hero-chat-card">
-          <div class="chat-header">
-            <div class="icon">🤖</div>
-            <div>
-              <div class="label">AI Assistant</div>
-              <div class="sub">Get instant, cited answers grounded in the official Code</div>
+        <!-- Right: search + stats -->
+        <div class="hero-right">
+          <div class="search-card">
+            <div class="search-label">Search the Code</div>
+            <div class="search-row">
+              <input class="search-input" type="text" placeholder="Search requirements, domains, topics…" />
+              <button class="btn-search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Search
+              </button>
+            </div>
+            <a class="search-ai-link" href="#">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+              Or ask a question in natural language →
+            </a>
+            <div class="search-chips">
+              <span class="search-chip">Service accessibility</span>
+              <span class="search-chip">Digital channels</span>
+              <span class="search-chip">Proactive delivery</span>
+              <span class="search-chip">Waiting time</span>
             </div>
           </div>
 
-          <div class="chat-body">
-            <div class="msg-user">
-              What are the requirements for proactive service delivery in the UAE Government Services Code?
+          <div class="stats-grid">
+            <div class="stat">
+              <div class="stat-num">8</div>
+              <div class="stat-label">Domains</div>
             </div>
-            <div class="msg-ai">
-              Proactive service delivery is addressed under Req. 2.3.1–2.3.4, which mandate that entities anticipate and initiate service delivery without requiring customer action. This includes automated eligibility notifications, pre-filled forms, and event-triggered outreach…
+            <div class="stat">
+              <div class="stat-num">300+</div>
+              <div class="stat-label">Requirements</div>
             </div>
-            <span class="source-pill">📎 Source: Req. 2.3.1 – 2.3.4 · Domain 2</span>
-          </div>
-
-          <div class="chat-caps">
-            <span class="cap-pill">Explains requirements</span>
-            <span class="cap-pill">Cites source requirements</span>
-            <span class="cap-pill">Compares sections</span>
-            <span class="cap-pill">Summarises domains</span>
-            <span class="cap-pill">Guided interpretation</span>
+            <div class="stat">
+              <div class="stat-num">45+</div>
+              <div class="stat-label">Federal Entities</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">v1.0</div>
+              <div class="stat-label">Current Version</div>
+            </div>
           </div>
         </div>
 
       </div>
+    </div>
+  </section>
 
-      <div class="hero-strip">
-        <div class="hero-strip-inner">
-          <span>Issued by the Prime Minister's Office · EGSEP</span>
-          <span>Code Version 1.0 — Official Publication of the UAE Government Services Code</span>
-          <span>Arabic version coming soon</span>
-        </div>
+  <!-- Quick Access -->
+  <section class="section-white">
+    <div class="container">
+      <div style="margin-bottom:32px">
+        <span class="eyebrow">Quick Access</span>
+        <h2 class="section-heading">What would you like to do?</h2>
+      </div>
+
+      <div class="quick-grid">
+
+        <button class="quick-card">
+          <div class="quick-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </div>
+          <div>
+            <div class="quick-title">Browse the Code</div>
+            <div class="quick-desc">Explore all domains, categories, and requirements</div>
+          </div>
+        </button>
+
+        <button class="quick-card">
+          <div class="quick-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          </div>
+          <div>
+            <div class="quick-title">Ask AI a Question</div>
+            <div class="quick-desc">Get instant, cited answers</div>
+          </div>
+        </button>
+
+        <button class="quick-card">
+          <div class="quick-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          </div>
+          <div>
+            <div class="quick-title">Download the Code</div>
+            <div class="quick-desc">Full PDF version</div>
+          </div>
+        </button>
+
+        <button class="quick-card">
+          <div class="quick-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+          </div>
+          <div>
+            <div class="quick-title">View Glossary</div>
+            <div class="quick-desc">Definitions and terminology</div>
+          </div>
+        </button>
+
+        <button class="quick-card">
+          <div class="quick-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          </div>
+          <div>
+            <div class="quick-title">What's New</div>
+            <div class="quick-desc">Latest updates and amendments</div>
+          </div>
+        </button>
+
       </div>
     </div>
   </section>
 
   <!-- Browse by Domain -->
-  <section class="section">
+  <section class="section-cream">
     <div class="container">
 
-      <div class="section-header">
-        <div class="section-header-text">
-          <h2 class="section-title">Browse by Domain</h2>
+      <div class="section-header-row">
+        <div>
+          <span class="eyebrow">The Code</span>
+          <h2 class="section-heading">Browse by Domain</h2>
           <p class="section-sub">The Code is organised into eight domains, each covering a distinct dimension of government service delivery.</p>
         </div>
-        <a class="link-all" href="#">View all domains →</a>
+        <a class="view-all-link" href="#">
+          View all domains
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
 
       <div class="domains-grid">
-        <div class="domain-card">
-          <div class="domain-icon">🤝</div>
-          <div class="domain-req">Req. 1.1</div>
-          <div class="domain-title">Customer Experience</div>
-          <p class="domain-desc">Standards for designing services that put the customer first, ensuring dignity, clarity, and satisfaction at every touchpoint.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">💻</div>
-          <div class="domain-req">Req. 2.1</div>
-          <div class="domain-title">Digital Services</div>
-          <p class="domain-desc">Requirements for omnichannel digital delivery, mobile-first design, accessibility, and seamless online transactions.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">♿</div>
-          <div class="domain-req">Domain 3</div>
-          <div class="domain-title">Service Accessibility</div>
-          <p class="domain-desc">Ensuring all government services are accessible to every segment of society, including people of determination and the elderly.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">🔄</div>
-          <div class="domain-req">Domain 4</div>
-          <div class="domain-title">Omnichannel Experience</div>
-          <p class="domain-desc">Consistency of service delivery across all channels — digital, physical, telephone, and proactive — without loss of context.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">⚡</div>
-          <div class="domain-req">Req. 8.2</div>
-          <div class="domain-title">Service Efficiency</div>
-          <p class="domain-desc">Standards for streamlining processes, reducing burden, eliminating redundancy, and maximising resource efficiency.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">🏆</div>
-          <div class="domain-req">Req. 6.3</div>
-          <div class="domain-title">Service Excellence Culture</div>
-          <p class="domain-desc">Standards for building an organisational culture of continuous improvement, staff empowerment, and service innovation.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">🛡️</div>
-          <div class="domain-req">Domain 7</div>
-          <div class="domain-title">Resilient Digital Systems</div>
-          <p class="domain-desc">Requirements for secure, reliable, and resilient digital infrastructure underpinning government service delivery.</p>
-        </div>
-        <div class="domain-card">
-          <div class="domain-icon">📈</div>
-          <div class="domain-req">Domain 8</div>
-          <div class="domain-title">Continuous Improvement</div>
-          <p class="domain-desc">Requirements for establishing internal feedback loops and service improvement cycles within entities.</p>
-        </div>
-      </div>
 
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#8b6914,#8b691488)"></div>
+          <div class="domain-icon" style="background:#8b6914">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div class="domain-name">Customer Experience</div>
+          <div class="domain-desc">Standards for designing services that put the customer first, ensuring dignity, clarity, and satisfaction at every touchpoint.</div>
+          <div class="domain-footer">
+            <span class="req-badge">42 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#2d6a4f,#2d6a4f88)"></div>
+          <div class="domain-icon" style="background:#2d6a4f">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+          </div>
+          <div class="domain-name">Digital Services</div>
+          <div class="domain-desc">Requirements for omnichannel digital delivery, mobile-first design, accessibility, and seamless online transactions.</div>
+          <div class="domain-footer">
+            <span class="req-badge">38 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#1d4e89,#1d4e8988)"></div>
+          <div class="domain-icon" style="background:#1d4e89">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="domain-name">Service Accessibility</div>
+          <div class="domain-desc">Ensuring all government services are accessible to every segment of society, including people of determination and the elderly.</div>
+          <div class="domain-footer">
+            <span class="req-badge">29 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#7b2d8b,#7b2d8b88)"></div>
+          <div class="domain-icon" style="background:#7b2d8b">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+          </div>
+          <div class="domain-name">Omnichannel Experience</div>
+          <div class="domain-desc">Consistency of service delivery across all channels — digital, physical, telephone, and proactive — without loss of context.</div>
+          <div class="domain-footer">
+            <span class="req-badge">35 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#c0392b,#c0392b88)"></div>
+          <div class="domain-icon" style="background:#c0392b">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+          </div>
+          <div class="domain-name">Resilient Digital Systems</div>
+          <div class="domain-desc">Requirements for secure, reliable, and resilient digital infrastructure underpinning government service delivery.</div>
+          <div class="domain-footer">
+            <span class="req-badge">47 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#d35400,#d3540088)"></div>
+          <div class="domain-icon" style="background:#d35400">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <div class="domain-name">Service Excellence Culture</div>
+          <div class="domain-desc">Standards for building an organisational culture of continuous improvement, staff empowerment, and service innovation.</div>
+          <div class="domain-footer">
+            <span class="req-badge">33 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#16697a,#16697a88)"></div>
+          <div class="domain-icon" style="background:#16697a">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div class="domain-name">Participatory Design</div>
+          <div class="domain-desc">Requirements for co-designing services with residents, businesses, and stakeholders to ensure relevance and usability.</div>
+          <div class="domain-footer">
+            <span class="req-badge">28 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="domain-card">
+          <div class="domain-card-accent" style="background:linear-gradient(90deg,#4a4e69,#4a4e6988)"></div>
+          <div class="domain-icon" style="background:#4a4e69">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+          </div>
+          <div class="domain-name">Service Efficiency</div>
+          <div class="domain-desc">Standards for streamlining processes, reducing burden, eliminating redundancy, and maximising resource efficiency.</div>
+          <div class="domain-footer">
+            <span class="req-badge">41 requirements</span>
+            <span class="domain-arrow">→</span>
+          </div>
+        </button>
+
+      </div>
     </div>
   </section>
 
-  <!-- Featured Topics (dark) -->
-  <section class="section section-dark">
+  <!-- AI Assistant -->
+  <section class="ai-section">
+    <div class="container">
+      <div class="ai-inner">
+
+        <!-- Left: copy -->
+        <div>
+          <div class="ai-badge">AI-Powered</div>
+          <h2 class="ai-heading">
+            Ask the Code.<br>
+            <span>Get Instant, Cited Answers.</span>
+          </h2>
+          <p class="ai-desc">
+            Get instant, cited answers grounded in the official UAE Government Services Code. The AI explains requirements, compares sections, and provides guided interpretation.
+          </p>
+          <div class="ai-caps">
+            <span class="ai-cap">✓ Explains requirements</span>
+            <span class="ai-cap">✓ Cites source requirements</span>
+            <span class="ai-cap">✓ Compares sections</span>
+            <span class="ai-cap">✓ Summarises domains</span>
+            <span class="ai-cap">✓ Guided interpretation</span>
+          </div>
+          <a class="btn-ai" href="#">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            Ask AI a Question
+          </a>
+        </div>
+
+        <!-- Right: chat demo -->
+        <div class="chat-mock">
+          <div class="chat-header-row">
+            <div class="chat-header-icon">🤖</div>
+            <div>
+              <div class="chat-header-title">AI Assistant</div>
+              <div class="chat-header-sub">Powered by the official Code</div>
+            </div>
+          </div>
+
+          <div class="bubble-user">
+            What are the requirements for proactive service delivery in the UAE Government Services Code?
+          </div>
+
+          <div class="bubble-ai">
+            Proactive service delivery is addressed under Req. 2.3.1–2.3.4. Entities must anticipate and initiate service delivery without requiring customer action — including automated eligibility notifications, pre-filled forms, and event-triggered outreach based on life events or status changes.
+          </div>
+
+          <span class="source-tag">
+            📎 Source: Req. 2.3.1 – 2.3.4 · Domain 2
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Topics -->
+  <section class="section-white">
     <div class="container">
 
-      <div class="section-header">
-        <div class="section-header-text">
-          <h2 class="section-title">Featured Topics</h2>
-          <p class="section-sub">Explore all topics across the Code — from accessibility standards to digital delivery and beyond.</p>
+      <div class="section-header-row">
+        <div>
+          <span class="eyebrow">Featured</span>
+          <h2 class="section-heading">Featured Topics</h2>
+          <p class="section-sub">Highlighted requirements and categories from across the Code.</p>
         </div>
-        <a class="link-all" href="#">Explore all topics →</a>
+        <a class="view-all-link" href="#">
+          Explore all topics
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
 
-      <div class="topics-grid">
-        <div class="topic-card">
-          <div class="topic-tag">Domain 4</div>
-          <div class="topic-name">Omnichannel Experience Requirements</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Domain 3</div>
-          <div class="topic-name">Service Accessibility Standards for People of Determination</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Req. 2.3</div>
-          <div class="topic-name">Proactive Service Delivery</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Domain 1 · Req. 1.3</div>
-          <div class="topic-name">Waiting Time Standards</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Domain 2</div>
-          <div class="topic-name">Digital Channels &amp; Mobile-First Design</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Domain 2 – Customer First</div>
-          <div class="topic-name">Customer-First Service Design</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Req. 8.2</div>
-          <div class="topic-name">Efficiency &amp; Process Streamlining</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Domain 9</div>
-          <div class="topic-name">Participatory Design &amp; AI-Assisted Co-Design</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Domain 5</div>
-          <div class="topic-name">Cybersecurity Compliance Requirements</div>
-        </div>
-        <div class="topic-card">
-          <div class="topic-tag">Req. 6.3</div>
-          <div class="topic-name">Excellence Culture &amp; Staff Empowerment</div>
-        </div>
-      </div>
+      <div class="bento-grid">
 
-      <div style="margin-top: 48px;">
-        <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.35); margin-bottom: 12px;">Popular searches</div>
-        <div class="searches-wrap">
-          <span class="search-pill">Service accessibility</span>
-          <span class="search-pill">Proactive delivery</span>
-          <span class="search-pill">Digital channels</span>
-          <span class="search-pill">Waiting time</span>
-          <span class="search-pill">Omnichannel</span>
-          <span class="search-pill">Requirement 2.1.5</span>
-          <span class="search-pill">Federal entities</span>
+        <!-- Large featured card -->
+        <div class="bento-card bento-main">
+          <span class="topic-tag" style="color:#1d4e89;border-color:#93c5fd;background:#eff6ff">Req. 1.1 · Domain 3</span>
+          <div class="bento-title-lg">Service Accessibility Standards for People of Determination</div>
+          <p class="bento-desc">Requirements for ensuring that all UAE government services are fully accessible to people of determination, the elderly, and other vulnerable groups — covering physical, digital, and remote service channels.</p>
+          <div class="bento-meta">
+            <span>Updated May 2025</span>
+            <span class="meta-dot"></span>
+            <span>Domain 3</span>
+            <span class="meta-dot"></span>
+            <span>8 requirements</span>
+          </div>
         </div>
-      </div>
 
+        <!-- Small cards -->
+        <div class="bento-card">
+          <span class="topic-tag" style="color:#7b2d8b;border-color:#c4b5fd;background:#f5f3ff">Req. 2.1 · Domain 4</span>
+          <div class="bento-title-sm">Omnichannel Experience Requirements</div>
+          <div class="bento-meta">
+            <span>5 requirements</span>
+            <span class="meta-dot"></span>
+            <span>Domain 4</span>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <span class="topic-tag" style="color:#d97706;border-color:#fcd34d;background:#fffbeb">Req. 8.2 · Domain 8</span>
+          <div class="bento-title-sm">Reducing Service Delivery Time Standards</div>
+          <div class="bento-meta">
+            <span>6 requirements</span>
+            <span class="meta-dot"></span>
+            <span>Domain 8</span>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <span class="topic-tag" style="color:#d35400;border-color:#fdba74;background:#fff7ed">Req. 6.3 · Domain 6</span>
+          <div class="bento-title-sm">Continuous Improvement Frameworks</div>
+          <div class="bento-meta">
+            <span>4 requirements</span>
+            <span class="meta-dot"></span>
+            <span>Domain 6</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
   <!-- Recently Updated -->
-  <section class="section">
+  <section class="section-cream">
     <div class="container">
 
-      <div class="section-header">
-        <div class="section-header-text">
-          <h2 class="section-title">Recently Updated</h2>
+      <div class="section-header-row">
+        <div>
+          <span class="eyebrow">Updates</span>
+          <h2 class="section-heading">Recently Updated</h2>
           <p class="section-sub">The Code evolves continuously. Stay current with the latest amendments and additions.</p>
         </div>
-        <a class="link-all" href="#">View full changelog →</a>
+        <a class="view-all-link" href="#">
+          View full changelog
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
 
       <div class="updates-list">
-        <div class="update-card">
-          <span class="update-badge badge-amendment">Amendment</span>
-          <div class="update-body">
-            <div class="update-title">Req. 1.3.2 — Updated Waiting Time Standards for Physical Service Centres</div>
-            <div class="update-desc">Mandatory benchmarks for maximum processing times across different service categories. Reducing Service Delivery Time Standards.</div>
+
+        <div class="update-row">
+          <div class="date-box">
+            <div class="date-day">12</div>
+            <div class="date-month">May</div>
           </div>
-        </div>
-        <div class="update-card">
-          <span class="update-badge badge-new">New Requirement</span>
-          <div class="update-body">
+          <div class="update-content">
+            <span class="update-tag tag-new">New Requirement</span>
             <div class="update-title">Req. 2.4.7 — Proactive Notification Standards for Service Status Updates</div>
             <div class="update-desc">New requirement added under Digital Services domain mandating real-time status notifications for all transactional services.</div>
           </div>
         </div>
-        <div class="update-card">
-          <span class="update-badge badge-updated">Clarification</span>
-          <div class="update-body">
+
+        <div class="update-row">
+          <div class="date-box">
+            <div class="date-day">8</div>
+            <div class="date-month">May</div>
+          </div>
+          <div class="update-content">
+            <span class="update-tag tag-amendment">Amendment</span>
+            <div class="update-title">Req. 1.3.2 — Updated Waiting Time Standards for Physical Service Centres</div>
+            <div class="update-desc">Maximum waiting time reduced from 20 to 15 minutes. Mandatory benchmarks for maximum processing times across different service categories.</div>
+          </div>
+        </div>
+
+        <div class="update-row">
+          <div class="date-box">
+            <div class="date-day">2</div>
+            <div class="date-month">May</div>
+          </div>
+          <div class="update-content">
+            <span class="update-tag tag-clarif">Clarification</span>
             <div class="update-title">Domain 5 — Interpretation Guidance for Cybersecurity Compliance Requirements</div>
             <div class="update-desc">Additional interpretation notes added to requirements 5.1.1–5.1.4 to clarify scope for shared-service entities.</div>
           </div>
         </div>
-        <div class="update-card">
-          <span class="update-badge badge-new">New</span>
-          <div class="update-body">
+
+        <div class="update-row">
+          <div class="date-box">
+            <div class="date-day">28</div>
+            <div class="date-month">Apr</div>
+          </div>
+          <div class="update-content">
+            <span class="update-tag tag-new">New</span>
             <div class="update-title">Domain 7 — Participatory Design: New Sub-category on AI-Assisted Co-Design</div>
             <div class="update-desc">New sub-category added covering requirements for using AI tools in citizen engagement and service co-design processes.</div>
           </div>
         </div>
-        <div class="update-card">
-          <span class="update-badge badge-published">Published</span>
-          <div class="update-body">
+
+        <div class="update-row">
+          <div class="date-box">
+            <div class="date-day">21</div>
+            <div class="date-month">Apr</div>
+          </div>
+          <div class="update-content">
+            <span class="update-tag tag-published">Published</span>
             <div class="update-title">UAE Government Services Code — Version 1.0 Official Publication</div>
             <div class="update-desc">The inaugural version of the UAE Government Services Code has been officially published and is now in effect for all federal entities.</div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </section>
 
-  <!-- Quick Access -->
-  <section class="section-muted">
+  <!-- Helpful Resources -->
+  <section class="section-white">
     <div class="container">
 
-      <h2 class="section-title" style="margin-bottom: 8px;">Quick Access</h2>
-      <p class="section-sub">Helpful resources for navigating and implementing the Code.</p>
-
-      <div class="qa-grid">
-        <div class="qa-card">
-          <div class="qa-icon">📋</div>
-          <div>
-            <div class="qa-title">All Requirements</div>
-            <div class="qa-sub">Explore all domains, categories, and individual requirements.</div>
-            <div class="qa-link">Browse requirements →</div>
-          </div>
-        </div>
-        <div class="qa-card">
-          <div class="qa-icon">📖</div>
-          <div>
-            <div class="qa-title">Glossary</div>
-            <div class="qa-sub">Definitions and terminology used throughout the Code.</div>
-            <div class="qa-link">View Glossary →</div>
-          </div>
-        </div>
-        <div class="qa-card">
-          <div class="qa-icon">🕑</div>
-          <div>
-            <div class="qa-title">Version History</div>
-            <div class="qa-sub">Stay current with all amendments and additions to the Code.</div>
-            <div class="qa-link">View history →</div>
-          </div>
-        </div>
-        <div class="qa-card">
-          <div class="qa-icon">⬇️</div>
-          <div>
-            <div class="qa-title">Download Full PDF</div>
-            <div class="qa-sub">Get the complete Code document as a PDF.</div>
-            <div class="qa-link">Download PDF →</div>
-          </div>
-        </div>
-        <div class="qa-card">
-          <div class="qa-icon">🏛️</div>
-          <div>
-            <div class="qa-title">Federal Entities</div>
-            <div class="qa-sub">At-a-glance summary of entities covered under the Code.</div>
-            <div class="qa-link">View entities →</div>
-          </div>
-        </div>
-        <div class="qa-card">
-          <div class="qa-icon">❓</div>
-          <div>
-            <div class="qa-title">FAQs</div>
-            <div class="qa-sub">Common questions answered about implementation and interpretation.</div>
-            <div class="qa-link">View FAQs →</div>
-          </div>
-        </div>
+      <div style="margin-bottom:32px">
+        <span class="eyebrow">Resources</span>
+        <h2 class="section-heading">Helpful Resources</h2>
       </div>
 
+      <div class="resources-grid">
+
+        <div class="resource-card">
+          <div class="resource-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          </div>
+          <div>
+            <div class="resource-title">Download Full PDF</div>
+            <div class="resource-desc">Complete Code document</div>
+          </div>
+        </div>
+
+        <div class="resource-card">
+          <div class="resource-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+          </div>
+          <div>
+            <div class="resource-title">FAQs</div>
+            <div class="resource-desc">Common questions answered</div>
+          </div>
+        </div>
+
+        <div class="resource-card">
+          <div class="resource-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+          </div>
+          <div>
+            <div class="resource-title">Glossary</div>
+            <div class="resource-desc">Terms and definitions</div>
+          </div>
+        </div>
+
+        <div class="resource-card">
+          <div class="resource-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+          </div>
+          <div>
+            <div class="resource-title">Quick Reference Guide</div>
+            <div class="resource-desc">At-a-glance summaries</div>
+          </div>
+        </div>
+
+        <div class="resource-card">
+          <div class="resource-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+          </div>
+          <div>
+            <div class="resource-title">About EGSEP</div>
+            <div class="resource-desc">Programme overview</div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <img src="/manus-storage/uae-gov-logo_4e84861d.png" alt="UAE Government" />
-        <div class="footer-brand-text">
-          <div class="gov-label">Government of United Arab Emirates</div>
-          <div class="code-label">Government Services Code</div>
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Brand column -->
+        <div class="footer-brand">
+          <img src="/manus-storage/uae-gov-logo_4e84861d.png" alt="UAE Government" />
+          <div class="footer-gov">Government of</div>
+          <div class="footer-country">United Arab Emirates</div>
+          <p class="footer-brand-desc">The official reference framework for government service excellence across all UAE federal entities.</p>
+          <div class="footer-credit">Prime Minister's Office · EGSEP</div>
         </div>
+
+        <!-- The Code -->
+        <div>
+          <div class="footer-col-title">The Code</div>
+          <div class="footer-links">
+            <span class="footer-link">Browse Domains</span>
+            <span class="footer-link">All Requirements</span>
+            <span class="footer-link">Search</span>
+            <span class="footer-link">Version History</span>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div>
+          <div class="footer-col-title">Tools</div>
+          <div class="footer-links">
+            <span class="footer-link">AI Assistant</span>
+            <span class="footer-link">Glossary</span>
+            <span class="footer-link">Quick Guides</span>
+            <span class="footer-link">Download PDF</span>
+          </div>
+        </div>
+
+        <!-- About -->
+        <div>
+          <div class="footer-col-title">About</div>
+          <div class="footer-links">
+            <span class="footer-link">About the Code</span>
+            <span class="footer-link">Objectives</span>
+            <span class="footer-link">Governance</span>
+            <span class="footer-link">PMO / EGSEP</span>
+            <span class="footer-link">Contact</span>
+          </div>
+        </div>
+
       </div>
-      <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-      </div>
-      <div class="footer-version">
-        Issued by the Prime Minister's Office · EGSEP<br>
-        Code Version 1.0
+
+      <div class="footer-bottom">
+        <span>© 2025 UAE Prime Minister's Office. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Accessibility</a>
+          <a href="#">Terms of Use</a>
+        </div>
       </div>
     </div>
   </footer>
@@ -386,7 +641,7 @@
   <!-- Demo banner -->
   <div class="demo-banner">
     <strong>Demo Version</strong>
-    — This page is not live and cannot be shared directly. Please publish to get a public link.
+    — All content, data, and requirements shown are static and for representation purposes only.
   </div>
 
 </body>
