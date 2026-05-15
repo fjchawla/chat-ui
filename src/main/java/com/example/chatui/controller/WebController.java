@@ -47,6 +47,9 @@ public class WebController {
     @GetMapping("/ingest/evaluate")
     public String ingestEvaluate() { return "ingest/evaluate"; }
 
+    @GetMapping("/demo")
+    public String demo() { return "demo/index"; }
+
     // ── Chat API ───────────────────────────────────────────────────────
 
     @PostMapping("/api/chat")
