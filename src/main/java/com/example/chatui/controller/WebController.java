@@ -48,7 +48,7 @@ public class WebController {
     public String ingestEvaluate() { return "ingest/evaluate"; }
 
     @GetMapping("/demo")
-    public String demo() { return "demo/index"; }
+    public String demo() { return "redirect:/demo/index.html"; }
 
     // ── Chat API ───────────────────────────────────────────────────────
 
