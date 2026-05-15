@@ -5,337 +5,303 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Ingestion Status — ServiceCodeChat</title>
+    <link rel="stylesheet" href="/css/main.css"/>
     <style>
-        :root {
-            --bg-base:    #0f172a;
-            --bg-surface: #1e293b;
-            --bg-raised:  #273549;
-            --border:     #334155;
-            --text-primary:   #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted:     #64748b;
-            --accent:         #6366f1;
-            --accent-hover:   #4f46e5;
-            --success:        #22c55e;
-            --error:          #ef4444;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: var(--bg-base);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ── Shared Nav ─────────────────────────────────────────────── */
-        .top-bar { background: var(--bg-surface); border-bottom: 1px solid var(--border); padding: 0 1.25rem; height: 56px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
-        .navbar-brand { display: flex; align-items: center; gap: 0.625rem; font-weight: 700; font-size: 1rem; color: var(--text-primary); }
-        .brand-dot { width: 32px; height: 32px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .user-info { font-size: 0.8rem; color: var(--text-secondary); }
-        .btn-logout { font-size: 0.8rem; padding: 0.3rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
-        .btn-logout:hover { border-color: var(--error); color: var(--error); }
-        .tab-bar { background: var(--bg-surface); border-bottom: 1px solid var(--border); padding: 0 1.25rem; display: flex; gap: 0.125rem; flex-shrink: 0; }
-        .tab { display: flex; align-items: center; gap: 0.375rem; padding: 0 0.875rem; height: 40px; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
-        .tab:hover { color: var(--text-primary); }
-        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-        /* ── Page layout ─────────────────────────────────────────────── */
-        .page-content {
-            flex: 1;
-            padding: 2.5rem 1.5rem;
-            max-width: 860px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* ── Status header ───────────────────────────────────────────── */
-        .status-header {
+        /* ── Page header row ────────────────────────────────────────── */
+        .status-toolbar {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 1.75rem;
-            gap: 1rem;
+            gap: 16px;
             flex-wrap: wrap;
+            margin-bottom: 24px;
         }
-        .status-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
-        .status-header p  { font-size: 0.875rem; color: var(--text-secondary); }
 
-        .refresh-controls {
+        /* ── Refresh controls ───────────────────────────────────────── */
+        .refresh-panel {
             display: flex;
             align-items: center;
-            gap: 0.875rem;
+            gap: 12px;
             flex-shrink: 0;
         }
-        .refresh-meta { text-align: right; }
-        .last-updated { font-size: 0.775rem; color: var(--text-muted); display: block; }
-        .countdown-wrap {
+        .refresh-meta {
+            text-align: right;
             display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .last-updated {
+            font-size: 12px;
+            color: var(--clr-on-surf-faint);
+        }
+        .countdown-row {
+            display: none;
             align-items: center;
-            gap: 0.4rem;
-            font-size: 0.775rem;
-            color: var(--text-secondary);
+            gap: 6px;
+            font-size: 12px;
+            color: var(--clr-on-surf-var);
         }
-        .countdown-ring {
-            position: relative;
-            width: 20px; height: 20px;
-        }
-        .countdown-ring svg { transform: rotate(-90deg); }
-        .countdown-ring .track { stroke: var(--border); fill: none; }
-        .countdown-ring .progress { stroke: var(--accent); fill: none; transition: stroke-dashoffset 1s linear; stroke-linecap: round; }
-        #countdown-num { font-weight: 600; color: var(--accent); }
+        .countdown-row.visible { display: flex; justify-content: flex-end; }
+        #countdown-num { font-weight: 600; color: var(--clr-primary); }
+
+        /* SVG ring */
+        .ring-wrap { width: 22px; height: 22px; flex-shrink: 0; }
+        .ring-wrap svg { transform: rotate(-90deg); display: block; }
+        .ring-track    { fill: none; stroke: var(--clr-outline-var); stroke-width: 2.5; }
+        .ring-progress { fill: none; stroke: var(--clr-primary); stroke-width: 2.5; stroke-linecap: round;
+                         transition: stroke-dashoffset 1s linear; }
 
         .btn-refresh {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.45rem 0.875rem;
-            font-size: 0.8125rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            all: unset; cursor: pointer;
+            height: 36px; padding: 0 16px;
+            border-radius: var(--r-full);
+            background: var(--clr-surf-high);
+            border: 1px solid var(--clr-outline-var);
+            color: var(--clr-on-surf-var);
+            font-family: var(--font); font-size: 13px; font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+            transition: background var(--dur-s), color var(--dur-s), border-color var(--dur-s);
         }
-        .btn-refresh:hover:not(:disabled) { border-color: var(--accent); color: var(--text-primary); }
+        .btn-refresh:hover:not(:disabled) {
+            background: var(--clr-surf-highest);
+            border-color: var(--clr-primary);
+            color: var(--clr-on-surface);
+        }
         .btn-refresh:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-refresh svg { width: 13px; height: 13px; fill: currentColor; }
-        .spinning { animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn-refresh svg { transition: transform 0.3s; }
+        .btn-refresh.spinning svg { animation: spin 0.7s linear infinite; }
 
-        /* ── Status items ────────────────────────────────────────────── */
-        #status-container { display: flex; flex-direction: column; gap: 0.625rem; }
+        /* ── Status list ────────────────────────────────────────────── */
+        #status-list { display: flex; flex-direction: column; gap: 8px; }
 
         .status-item {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
+            background: var(--clr-surf-base);
+            background-image: linear-gradient(var(--elev-1), var(--elev-1));
+            border: 1px solid var(--clr-outline-var);
+            border-radius: var(--r-lg);
+            padding: 16px 20px;
+            display: flex;
             align-items: center;
-            gap: 1rem;
-            animation: fadeIn 0.25s ease;
+            gap: 16px;
+            animation: fade-up var(--dur-m) var(--ease) both;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 0.3rem;
-            padding: 0.2rem 0.625rem; border-radius: 5px;
-            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em;
-            white-space: nowrap;
-        }
-        .status-badge.done    { background: rgba(34,197,94,0.15); color: #86efac; }
-        .status-badge.failed  { background: rgba(239,68,68,0.15); color: #fca5a5; }
-        .status-badge.running { background: rgba(99,102,241,0.15); color: #a5b4fc; }
-        .status-badge.info    { background: rgba(99,102,241,0.1); color: var(--text-secondary); }
-
-        .item-main { min-width: 0; }
-        .item-title {
-            font-size: 0.875rem; font-weight: 500;
+        .status-item-body { flex: 1; min-width: 0; }
+        .status-item-name {
+            font-size: 14px; font-weight: 500;
+            color: var(--clr-on-surface);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            margin-bottom: 0.2rem;
+            margin-bottom: 3px;
         }
-        .item-detail { font-size: 0.775rem; color: var(--text-secondary); }
+        .status-item-meta { font-size: 12.5px; color: var(--clr-on-surf-faint); }
+        .status-item-right { text-align: right; flex-shrink: 0; }
+        .chunks-val   { font-size: 18px; font-weight: 600; color: var(--clr-on-surface); line-height: 1; }
+        .chunks-label { font-size: 11px; color: var(--clr-on-surf-faint); }
 
-        .item-meta { text-align: right; flex-shrink: 0; }
-        .meta-val { font-size: 0.8rem; color: var(--text-primary); font-weight: 500; }
-        .meta-label { font-size: 0.7rem; color: var(--text-muted); }
-
-        /* ── Empty / error states ────────────────────────────────────── */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
-        }
-        .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.5; }
-        .empty-title { font-size: 0.9375rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.375rem; }
-        .empty-sub { font-size: 0.8125rem; }
-
-        .error-banner {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 10px;
-            padding: 0.875rem 1rem;
-            color: #fca5a5;
-            font-size: 0.85rem;
-        }
-
-        /* ── Info message row (for placeholder backend responses) ────── */
+        /* ── Info items (placeholder backend responses) ──────────────── */
         .info-item {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
-            font-size: 0.85rem;
-            animation: fadeIn 0.25s ease;
+            background: var(--clr-surf-base);
+            background-image: linear-gradient(var(--elev-1), var(--elev-1));
+            border: 1px solid var(--clr-outline-var);
+            border-radius: var(--r-lg);
+            padding: 16px 20px;
+            animation: fade-up var(--dur-m) var(--ease) both;
         }
-        .info-item-msg    { color: var(--text-primary); margin-bottom: 0.25rem; }
-        .info-item-detail { font-size: 0.8rem; color: var(--text-secondary); }
+        .info-msg    { font-size: 14px; color: var(--clr-on-surface); margin-bottom: 4px; }
+        .info-detail { font-size: 13px; color: var(--clr-on-surf-var); }
+
+        /* ── Empty / Error states ───────────────────────────────────── */
+        .state-wrap {
+            padding: 56px 24px;
+            text-align: center;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        .state-icon {
+            width: 64px; height: 64px;
+            background: var(--clr-surf-high);
+            border: 1px solid var(--clr-outline-var);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 4px;
+        }
+        .state-title { font-size: 16px; font-weight: 600; color: var(--clr-on-surface); }
+        .state-sub   { font-size: 13.5px; color: var(--clr-on-surf-var); max-width: 340px; line-height: 1.55; }
     </style>
 </head>
-<body>
+<body class="page-root">
 
 <div th:replace="~{fragments/nav :: navbar('status')}"></div>
 
-<div class="page-content">
-    <div class="status-header">
-        <div>
-            <h1>Ingestion Status</h1>
-            <p>Live view of ingestion jobs. Refreshes automatically every 15 seconds.</p>
-        </div>
-        <div class="refresh-controls">
-            <div class="refresh-meta">
-                <span class="last-updated" id="last-updated">—</span>
-                <div class="countdown-wrap" id="countdown-wrap" style="display:none">
-                    <div class="countdown-ring">
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <circle class="track"    cx="10" cy="10" r="8" stroke-width="2"/>
-                            <circle class="progress" cx="10" cy="10" r="8" stroke-width="2"
-                                    id="progress-circle"
-                                    stroke-dasharray="50.27"
-                                    stroke-dashoffset="0"/>
-                        </svg>
+<div class="page-scroll">
+    <div class="page-content">
+        <div class="page-max">
+
+            <div class="status-toolbar">
+                <div>
+                    <h1 class="page-title">Ingestion Status</h1>
+                    <p class="page-sub">Auto-refreshes every 15 seconds.</p>
+                </div>
+                <div class="refresh-panel">
+                    <div class="refresh-meta">
+                        <span class="last-updated" id="last-updated">—</span>
+                        <div class="countdown-row" id="countdown-row">
+                            <div class="ring-wrap">
+                                <svg width="22" height="22" viewBox="0 0 22 22">
+                                    <circle class="ring-track"    cx="11" cy="11" r="8"/>
+                                    <circle class="ring-progress" cx="11" cy="11" r="8"
+                                            id="ring-progress"
+                                            stroke-dasharray="50.27"
+                                            stroke-dashoffset="0"/>
+                                </svg>
+                            </div>
+                            Next refresh in <span id="countdown-num">15</span>s
+                        </div>
                     </div>
-                    Next in <span id="countdown-num">15</span>s
+                    <button class="btn-refresh" id="refresh-btn" onclick="fetchStatus()">
+                        <svg id="refresh-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                        Refresh
+                    </button>
                 </div>
             </div>
-            <button class="btn-refresh" id="refresh-btn" onclick="fetchStatus()">
-                <svg viewBox="0 0 24 24" id="refresh-icon"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-                Refresh
-            </button>
-        </div>
-    </div>
 
-    <div id="status-container">
-        <div class="empty-state">
-            <div class="empty-icon">⏳</div>
-            <div class="empty-title">Loading status…</div>
+            <div id="status-list">
+                <div class="state-wrap">
+                    <div class="state-icon">
+                        <div class="spinner-md"></div>
+                    </div>
+                    <div class="state-title">Loading status…</div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <script>
-    const INTERVAL = 15; // seconds
-    const CIRCUMFERENCE = 50.27; // 2 * PI * 8
+    const INTERVAL   = 15;
+    const CIRCUMF    = 50.27; // 2π × 8
 
     let countdown = INTERVAL;
-    let timer = null;
-    let isFetching = false;
+    let fetching  = false;
+    let ring      = document.getElementById('ring-progress');
 
     async function fetchStatus() {
-        if (isFetching) return;
-        isFetching = true;
+        if (fetching) return;
+        fetching = true;
         countdown = INTERVAL;
+        updateRing();
 
-        const btn = document.getElementById('refresh-btn');
+        const btn  = document.getElementById('refresh-btn');
         const icon = document.getElementById('refresh-icon');
         btn.disabled = true;
-        icon.classList.add('spinning');
+        btn.classList.add('spinning');
 
         try {
-            const res = await fetch('/api/ingest/status');
+            const res  = await fetch('/api/ingest/status');
             const data = await res.json();
-
-            if (!res.ok) {
-                renderError(data.error || 'Failed to fetch status.');
-            } else {
-                renderStatus(Array.isArray(data) ? data : []);
-            }
+            res.ok ? renderList(Array.isArray(data) ? data : [])
+                   : renderError(data.error || 'Failed to fetch status.');
 
             const now = new Date();
             document.getElementById('last-updated').textContent =
-                'Updated ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('countdown-wrap').style.display = 'flex';
+                'Updated ' + now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+            document.getElementById('countdown-row').classList.add('visible');
         } catch (e) {
             renderError('Could not reach server: ' + e.message);
         } finally {
-            isFetching = false;
+            fetching = false;
             btn.disabled = false;
-            icon.classList.remove('spinning');
+            btn.classList.remove('spinning');
         }
     }
 
-    function renderStatus(items) {
-        const container = document.getElementById('status-container');
-
-        if (items.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">📭</div>
-                    <div class="empty-title">No ingestion jobs found</div>
-                    <div class="empty-sub">Upload a document or trigger ingestion to get started.</div>
-                </div>`;
+    function renderList(items) {
+        const el = document.getElementById('status-list');
+        if (!items.length) {
+            el.innerHTML = `<div class="state-wrap fade-up">
+                <div class="state-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--clr-on-surf-faint)">
+                        <path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.05 15.96 0 13.36 0c-1.4 0-2.72.6-3.64 1.56L8 3.34 6.27 1.56C5.35.6 4.04 0 2.64 0 1.04 0 0 1.04 0 2.64c0 .48.11.92.18 1.36H0v16c0 1.1.89 2 2 2h20c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 16H2V8h20v14zM10 12H8v-2h2v2zm6 0h-2v-2h2v2z"/>
+                    </svg>
+                </div>
+                <div class="state-title">No ingestion jobs found</div>
+                <div class="state-sub">Upload a document or trigger ingestion to get started.</div>
+            </div>`;
             return;
         }
 
-        // Detect shape: IngestionStatus vs placeholder {message, detail}
-        const isIngestionStatus = items[0] && (items[0].jobId !== undefined || items[0].sourceFile !== undefined || items[0].status !== undefined);
+        // Detect IngestionStatus vs placeholder {message, detail}
+        const isIngestion = items[0] &&
+            (items[0].jobId !== undefined || items[0].sourceFile !== undefined || items[0].status !== undefined);
 
-        if (isIngestionStatus) {
-            container.innerHTML = items.map(item => renderIngestionItem(item)).join('');
-        } else {
-            container.innerHTML = items.map(item => renderInfoItem(item)).join('');
-        }
+        el.innerHTML = isIngestion
+            ? items.map((d, i) => renderIngestionItem(d, i)).join('')
+            : items.map((d, i) => renderInfoItem(d, i)).join('');
     }
 
-    function renderIngestionItem(d) {
-        const statusCls = (d.status || 'done').toLowerCase();
-        const statusLabel = d.status || 'UNKNOWN';
-        const sourceFile = d.sourceFile ? d.sourceFile.split(/[/\\]/).pop() : '—';
+    function renderIngestionItem(d, i) {
+        const chipMap = { DONE:'chip-success', FAILED:'chip-error', RUNNING:'chip-primary', PENDING:'chip-surface' };
+        const chip = `<span class="chip ${chipMap[d.status] || 'chip-surface'}">${d.status || 'UNKNOWN'}</span>`;
+        const filename = d.sourceFile ? d.sourceFile.split(/[/\\]/).pop() : '—';
+        const meta = [
+            d.jobId != null ? 'Job #' + d.jobId : null,
+            d.errorMessage  ? '⚠ ' + esc(d.errorMessage) : null
+        ].filter(Boolean).join(' · ');
         const chunks = d.chunksIngested != null ? d.chunksIngested : '—';
 
-        return `<div class="status-item">
-            <span class="status-badge ${statusCls}">${statusLabel}</span>
-            <div class="item-main">
-                <div class="item-title">${escHtml(sourceFile)}</div>
-                ${d.errorMessage ? `<div class="item-detail" style="color:#fca5a5">${escHtml(d.errorMessage)}</div>` : ''}
-                ${d.jobId != null ? `<div class="item-detail">Job #${d.jobId}</div>` : ''}
+        return `<div class="status-item" style="animation-delay:${i * 50}ms">
+            ${chip}
+            <div class="status-item-body">
+                <div class="status-item-name">${esc(filename)}</div>
+                ${meta ? `<div class="status-item-meta">${meta}</div>` : ''}
             </div>
-            <div class="item-meta">
-                <div class="meta-val">${chunks}</div>
-                <div class="meta-label">chunks</div>
+            <div class="status-item-right">
+                <div class="chunks-val">${chunks}</div>
+                <div class="chunks-label">chunks</div>
             </div>
         </div>`;
     }
 
-    function renderInfoItem(d) {
-        return `<div class="info-item">
-            <div class="info-item-msg">${escHtml(d.message || JSON.stringify(d))}</div>
-            ${d.detail ? `<div class="info-item-detail">${escHtml(d.detail)}</div>` : ''}
+    function renderInfoItem(d, i) {
+        return `<div class="info-item" style="animation-delay:${i * 50}ms">
+            <div class="info-msg">${esc(d.message || JSON.stringify(d))}</div>
+            ${d.detail ? `<div class="info-detail">${esc(d.detail)}</div>` : ''}
         </div>`;
     }
 
     function renderError(msg) {
-        document.getElementById('status-container').innerHTML =
-            `<div class="error-banner">⚠ ${escHtml(msg)}</div>`;
+        document.getElementById('status-list').innerHTML =
+            `<div class="banner banner-error fade-up">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                ${esc(msg)}
+            </div>`;
     }
 
-    // ── Countdown timer ────────────────────────────────────────────────
-    function tick() {
-        countdown = Math.max(0, countdown - 1);
-        document.getElementById('countdown-num').textContent = countdown;
+    /* ── Countdown ──────────────────────────────────────────────────── */
+    function updateRing() {
+        const offset = CIRCUMF * (1 - countdown / INTERVAL);
+        ring.style.strokeDashoffset = offset;
+    }
 
-        // Update ring (full = 0 offset, empty = CIRCUMFERENCE offset)
-        const offset = CIRCUMFERENCE * (1 - countdown / INTERVAL);
-        document.getElementById('progress-circle').style.strokeDashoffset = offset;
-
-        if (countdown === 0) {
-            fetchStatus();
+    setInterval(() => {
+        if (!fetching) {
+            countdown = Math.max(0, countdown - 1);
+            document.getElementById('countdown-num').textContent = countdown;
+            updateRing();
+            if (countdown === 0) fetchStatus();
         }
+    }, 1000);
+
+    function esc(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    function escHtml(str) {
-        if (!str) return '';
-        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    // ── Boot ────────────────────────────────────────────────────────────
+    // Boot
     fetchStatus();
-    timer = setInterval(tick, 1000);
 </script>
 </body>
 </html>
