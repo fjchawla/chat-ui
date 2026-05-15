@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -24,15 +25,24 @@ public class WebController {
         this.ingestionClient = ingestionClient;
     }
 
+    // ── Page routes ────────────────────────────────────────────────────
+
     @GetMapping("/")
-    public String index() {
-        return "index";
-    }
+    public String index() { return "index"; }
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+    public String login() { return "login"; }
+
+    @GetMapping("/ingest/upload")
+    public String ingestUpload() { return "ingest/upload"; }
+
+    @GetMapping("/ingest/trigger")
+    public String ingestTrigger() { return "ingest/trigger"; }
+
+    @GetMapping("/ingest/status")
+    public String ingestStatus() { return "ingest/status"; }
+
+    // ── Chat API ───────────────────────────────────────────────────────
 
     @PostMapping("/api/chat")
     @ResponseBody
@@ -48,6 +58,8 @@ public class WebController {
         }
     }
 
+    // ── Ingestion API ──────────────────────────────────────────────────
+
     @PostMapping("/api/upload")
     @ResponseBody
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file) {
@@ -62,11 +74,50 @@ public class WebController {
             IngestionStatus status = ingestionClient.upload(file);
             return ResponseEntity.ok(status);
         } catch (FeignException.ServiceUnavailable e) {
-            return ResponseEntity.status(502)
-                .body(Map.of("error", "Backend service unavailable."));
+            return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
         } catch (Exception e) {
-            return ResponseEntity.status(500)
-                .body(Map.of("error", "Upload failed: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("error", "Upload failed: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/ingest/trigger")
+    @ResponseBody
+    public ResponseEntity<?> triggerIngestion(@RequestParam("filename") String filename) {
+        try {
+            IngestionStatus status = ingestionClient.triggerExisting(filename);
+            return ResponseEntity.ok(status);
+        } catch (FeignException.NotFound e) {
+            return ResponseEntity.status(404).body(Map.of("error", "File not found on server: " + filename));
+        } catch (FeignException.ServiceUnavailable e) {
+            return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Trigger failed: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/ingest/trigger-all")
+    @ResponseBody
+    public ResponseEntity<?> triggerAll() {
+        try {
+            List<IngestionStatus> statuses = ingestionClient.triggerAll();
+            return ResponseEntity.ok(statuses);
+        } catch (FeignException.ServiceUnavailable e) {
+            return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Trigger-all failed: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/api/ingest/status")
+    @ResponseBody
+    public ResponseEntity<?> ingestionStatus() {
+        try {
+            List<Object> status = ingestionClient.status();
+            return ResponseEntity.ok(status);
+        } catch (FeignException.ServiceUnavailable e) {
+            return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Status fetch failed: " + e.getMessage()));
         }
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>ServiceCodeChat</title>
+    <title>Chat — ServiceCodeChat</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
     <style>
         :root {
@@ -35,8 +35,8 @@
             margin: 0;
         }
 
-        /* ── Navbar ─────────────────────────────────────────────────── */
-        .navbar {
+        /* ── Shared Nav ─────────────────────────────────────────────── */
+        .top-bar {
             background: var(--bg-surface);
             border-bottom: 1px solid var(--border);
             padding: 0 1.25rem;
@@ -73,93 +73,30 @@
             transition: all 0.15s;
         }
         .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
-
-        /* ── Main layout ─────────────────────────────────────────────── */
-        .main-layout {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* ── Sidebar (upload) ────────────────────────────────────────── */
-        .sidebar {
-            width: 300px;
-            flex-shrink: 0;
+        .tab-bar {
             background: var(--bg-surface);
-            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.25rem;
             display: flex;
-            flex-direction: column;
-            padding: 1.25rem;
-            gap: 1rem;
-            overflow-y: auto;
+            gap: 0.125rem;
+            flex-shrink: 0;
         }
-        .sidebar-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-        .drop-zone {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 1.75rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-        }
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: var(--accent);
-            background: rgba(99,102,241,0.05);
-        }
-        .drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-        .drop-label { font-size: 0.875rem; color: var(--text-secondary); }
-        .drop-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
-        #file-input { display: none; }
-        .btn-upload {
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .btn-upload:hover { background: var(--accent-hover); }
-        .btn-upload:disabled { opacity: 0.5; cursor: not-allowed; }
-        #selected-file {
-            font-size: 0.8rem;
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0 0.875rem;
+            height: 40px;
+            font-size: 0.8125rem;
+            font-weight: 500;
             color: var(--text-secondary);
-            background: var(--bg-raised);
-            border-radius: 8px;
-            padding: 0.5rem 0.75rem;
-            display: none;
-            word-break: break-all;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: color 0.15s, border-color 0.15s;
+            white-space: nowrap;
         }
-        .upload-status {
-            font-size: 0.8rem;
-            border-radius: 8px;
-            padding: 0.625rem 0.75rem;
-            display: none;
-        }
-        .upload-status.success {
-            background: rgba(34,197,94,0.1);
-            border: 1px solid rgba(34,197,94,0.25);
-            color: #86efac;
-        }
-        .upload-status.error {
-            background: rgba(239,68,68,0.1);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #fca5a5;
-        }
-        .upload-status.loading {
-            background: rgba(99,102,241,0.1);
-            border: 1px solid rgba(99,102,241,0.25);
-            color: #a5b4fc;
-        }
+        .tab:hover { color: var(--text-primary); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
         /* ── Chat area ───────────────────────────────────────────────── */
         .chat-area {
@@ -216,7 +153,6 @@
             border: 1px solid var(--border);
         }
 
-        /* structured response cards inside bot bubble */
         .resp-badge {
             display: inline-flex;
             align-items: center;
@@ -360,82 +296,35 @@
 </head>
 <body>
 
-<!-- ── Navbar ─────────────────────────────────────────────────────────── -->
-<nav class="navbar">
-    <div class="navbar-brand">
-        <div class="brand-dot">💬</div>
-        ServiceCodeChat
-    </div>
-    <div class="d-flex align-items-center gap-3">
-        <span class="user-info">
-            Signed in as <strong sec:authentication="name">user</strong>
-        </span>
-        <form th:action="@{/logout}" method="post" class="m-0">
-            <button type="submit" class="btn-logout">Sign out</button>
-        </form>
-    </div>
-</nav>
+<div th:replace="~{fragments/nav :: navbar('chat')}"></div>
 
-<!-- ── Main layout ────────────────────────────────────────────────────── -->
-<div class="main-layout">
-
-    <!-- ── Sidebar: Document Upload ──────────────────────────────────── -->
-    <aside class="sidebar">
-        <div class="sidebar-title">Documents</div>
-
-        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-            <div class="drop-icon">📄</div>
-            <div class="drop-label">Drop a PDF here</div>
-            <div class="drop-hint">or click to browse</div>
-            <input type="file" id="file-input" accept=".pdf"/>
+<div class="chat-area">
+    <div class="messages" id="messages">
+        <div class="empty-state" id="empty-state">
+            <div class="empty-icon">🔍</div>
+            <div style="font-size:1rem; font-weight:600; color:var(--text-secondary)">Ask about a service</div>
+            <div style="font-size:0.85rem;">Type a question in Arabic or English to find government service codes.</div>
         </div>
+    </div>
 
-        <div id="selected-file"></div>
-
-        <button class="btn-upload" id="upload-btn" disabled onclick="uploadFile()">
-            Upload &amp; Ingest
+    <div class="input-bar">
+        <button class="new-chat-btn" onclick="newConversation()" title="Start a new conversation">↺ New</button>
+        <div class="input-wrapper">
+            <textarea id="chat-input" rows="1"
+                      placeholder="Ask in Arabic or English…"
+                      oninput="autoResize(this)"
+                      onkeydown="handleKey(event)"></textarea>
+        </div>
+        <button class="btn-send" id="send-btn" onclick="sendMessage()" title="Send">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
-
-        <div class="upload-status" id="upload-status"></div>
-
-        <div class="mt-auto pt-2" style="border-top:1px solid var(--border)">
-            <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5; margin:0.75rem 0 0;">
-                Upload a PDF to add its content to the knowledge base. Ingestion may take several minutes for large documents.
-            </p>
-        </div>
-    </aside>
-
-    <!-- ── Chat area ──────────────────────────────────────────────────── -->
-    <div class="chat-area">
-        <div class="messages" id="messages">
-            <div class="empty-state" id="empty-state">
-                <div class="empty-icon">🔍</div>
-                <div style="font-size:1rem; font-weight:600; color:var(--text-secondary)">Ask about a service</div>
-                <div style="font-size:0.85rem;">Type a question in Arabic or English to find government service codes.</div>
-            </div>
-        </div>
-
-        <div class="input-bar">
-            <button class="new-chat-btn" onclick="newConversation()" title="Start a new conversation">↺ New</button>
-            <div class="input-wrapper">
-                <textarea id="chat-input" rows="1"
-                          placeholder="Ask in Arabic or English…"
-                          oninput="autoResize(this)"
-                          onkeydown="handleKey(event)"></textarea>
-            </div>
-            <button class="btn-send" id="send-btn" onclick="sendMessage()" title="Send">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
-        </div>
     </div>
 </div>
 
 <script>
-    // ── State ──────────────────────────────────────────────────────────
     let conversationId = crypto.randomUUID();
     let isLoading = false;
 
-    // ── Auto-resize textarea ───────────────────────────────────────────
     function autoResize(el) {
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 150) + 'px';
@@ -448,7 +337,6 @@
         }
     }
 
-    // ── Conversation management ────────────────────────────────────────
     function newConversation() {
         conversationId = crypto.randomUUID();
         document.getElementById('messages').innerHTML =
@@ -459,7 +347,6 @@
             </div>`;
     }
 
-    // ── Chat ───────────────────────────────────────────────────────────
     async function sendMessage() {
         const input = document.getElementById('chat-input');
         const query = input.value.trim();
@@ -484,8 +371,7 @@
                 const err = await res.json().catch(() => ({ error: 'Request failed.' }));
                 appendErrorMessage(err.error || 'Request failed.');
             } else {
-                const data = await res.json();
-                appendBotMessage(data);
+                appendBotMessage(await res.json());
             }
         } catch (e) {
             removeTypingIndicator(typingId);
@@ -496,8 +382,7 @@
     }
 
     function hideEmptyState() {
-        const el = document.getElementById('empty-state');
-        if (el) el.remove();
+        document.getElementById('empty-state')?.remove();
     }
 
     function setLoading(val) {
@@ -505,13 +390,10 @@
         document.getElementById('send-btn').disabled = val;
     }
 
-    // ── Message builders ───────────────────────────────────────────────
     function appendUserMessage(text) {
         const row = document.createElement('div');
         row.className = 'msg-row user';
-        row.innerHTML = `
-            <div class="avatar user">👤</div>
-            <div class="bubble">${escHtml(text)}</div>`;
+        row.innerHTML = `<div class="avatar user">👤</div><div class="bubble">${escHtml(text)}</div>`;
         appendMsg(row);
     }
 
@@ -520,61 +402,42 @@
         const row = document.createElement('div');
         row.className = 'msg-row bot';
         row.id = id;
-        row.innerHTML = `
-            <div class="avatar bot">✨</div>
-            <div class="bubble">
-                <div class="typing-indicator"><span></span><span></span><span></span></div>
-            </div>`;
+        row.innerHTML = `<div class="avatar bot">✨</div><div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
         appendMsg(row);
         return id;
     }
 
-    function removeTypingIndicator(id) {
-        document.getElementById(id)?.remove();
-    }
+    function removeTypingIndicator(id) { document.getElementById(id)?.remove(); }
 
     function appendBotMessage(r) {
         const row = document.createElement('div');
         row.className = 'msg-row bot';
-
         const confidenceCls = (r.confidence || '').toLowerCase();
         const foundBadge = r.found
             ? `<span class="resp-badge found">✓ Found</span>`
             : `<span class="resp-badge notfound">✗ Not Found</span>`;
-        const confBadge = r.confidence
-            ? `<span class="resp-badge ${confidenceCls}">${r.confidence}</span>`
-            : '';
-        const codeSpan = r.serviceCode
-            ? `<span class="resp-code">${escHtml(r.serviceCode)}</span> `
-            : '';
+        const confBadge = r.confidence ? `<span class="resp-badge ${confidenceCls}">${r.confidence}</span>` : '';
+        const codeSpan = r.serviceCode ? `<span class="resp-code">${escHtml(r.serviceCode)}</span> ` : '';
 
-        let html = `
-            <div class="avatar bot">✨</div>
-            <div class="bubble">
-                <div class="mb-2">${foundBadge} ${confBadge} ${codeSpan}</div>
-                <div>${escHtml(r.description || 'No description available.')}</div>`;
+        let html = `<div class="avatar bot">✨</div><div class="bubble">
+            <div class="mb-2">${foundBadge} ${confBadge} ${codeSpan}</div>
+            <div>${escHtml(r.description || 'No description available.')}</div>`;
 
         if (r.serviceNameEnglish || r.serviceNameArabic) {
-            html += `<div class="resp-section">
-                <div class="resp-section-label">Service Name</div>`;
+            html += `<div class="resp-section"><div class="resp-section-label">Service Name</div>`;
             if (r.serviceNameEnglish) html += `<div>${escHtml(r.serviceNameEnglish)}</div>`;
             if (r.serviceNameArabic)  html += `<div class="resp-arabic">${escHtml(r.serviceNameArabic)}</div>`;
             html += `</div>`;
         }
         if (r.additionalInfo) {
-            html += `<div class="resp-section">
-                <div class="resp-section-label">Details</div>
-                <div style="font-size:0.85rem;color:var(--text-secondary)">${escHtml(r.additionalInfo)}</div>
-            </div>`;
+            html += `<div class="resp-section"><div class="resp-section-label">Details</div>
+                <div style="font-size:0.85rem;color:var(--text-secondary)">${escHtml(r.additionalInfo)}</div></div>`;
         }
         if (r.arabicSourceExcerpt) {
-            html += `<div class="resp-section">
-                <div class="resp-section-label">Source Excerpt</div>
-                <div class="resp-excerpt resp-arabic">${escHtml(r.arabicSourceExcerpt)}</div>
-            </div>`;
+            html += `<div class="resp-section"><div class="resp-section-label">Source Excerpt</div>
+                <div class="resp-excerpt resp-arabic">${escHtml(r.arabicSourceExcerpt)}</div></div>`;
         }
         html += `</div>`;
-
         row.innerHTML = html;
         appendMsg(row);
     }
@@ -582,11 +445,9 @@
     function appendErrorMessage(text) {
         const row = document.createElement('div');
         row.className = 'msg-row bot';
-        row.innerHTML = `
-            <div class="avatar bot">✨</div>
+        row.innerHTML = `<div class="avatar bot">✨</div>
             <div class="bubble" style="border-color:rgba(239,68,68,0.3)">
-                <span style="color:#fca5a5">⚠ ${escHtml(text)}</span>
-            </div>`;
+                <span style="color:#fca5a5">⚠ ${escHtml(text)}</span></div>`;
         appendMsg(row);
     }
 
@@ -600,74 +461,6 @@
         if (!str) return '';
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
                   .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
-    }
-
-    // ── File Upload ────────────────────────────────────────────────────
-    const dropZone  = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-input');
-    const uploadBtn = document.getElementById('upload-btn');
-    const selectedFileEl = document.getElementById('selected-file');
-    const uploadStatusEl = document.getElementById('upload-status');
-
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length) selectFile(fileInput.files[0]);
-    });
-
-    dropZone.addEventListener('dragover', e => {
-        e.preventDefault();
-        dropZone.classList.add('drag-over');
-    });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-    dropZone.addEventListener('drop', e => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file) selectFile(file);
-    });
-
-    function selectFile(file) {
-        selectedFileEl.style.display = 'block';
-        selectedFileEl.textContent = '📎 ' + file.name;
-        uploadBtn.disabled = false;
-        uploadStatusEl.style.display = 'none';
-        fileInput._selectedFile = file;
-    }
-
-    async function uploadFile() {
-        const file = fileInput._selectedFile || fileInput.files[0];
-        if (!file) return;
-
-        showUploadStatus('loading', '⏳ Uploading and ingesting… this may take a few minutes.');
-        uploadBtn.disabled = true;
-
-        const form = new FormData();
-        form.append('file', file);
-
-        try {
-            const res = await fetch('/api/upload', { method: 'POST', body: form });
-            const data = await res.json();
-            if (!res.ok) {
-                showUploadStatus('error', '✗ ' + (data.error || 'Upload failed.'));
-            } else {
-                const chunks = data.chunksIngested != null ? ` (${data.chunksIngested} chunks)` : '';
-                const status = data.status || 'DONE';
-                if (status === 'FAILED') {
-                    showUploadStatus('error', '✗ Ingestion failed: ' + (data.errorMessage || 'Unknown error'));
-                } else {
-                    showUploadStatus('success', `✓ Ingested successfully${chunks}. Job #${data.jobId}`);
-                }
-            }
-        } catch (e) {
-            showUploadStatus('error', '✗ Upload error: ' + e.message);
-        } finally {
-            uploadBtn.disabled = false;
-        }
-    }
-
-    function showUploadStatus(type, msg) {
-        uploadStatusEl.className = 'upload-status ' + type;
-        uploadStatusEl.style.display = 'block';
-        uploadStatusEl.textContent = msg;
     }
 </script>
 </body>
