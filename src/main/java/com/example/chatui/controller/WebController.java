@@ -2,8 +2,8 @@ package com.example.chatui.controller;
 
 import com.example.chatui.client.ChatApiClient;
 import com.example.chatui.client.IngestionApiClient;
+import com.example.chatui.model.ChatJobStatus;
 import com.example.chatui.model.ChatRequest;
-import com.example.chatui.model.ChatResponse;
 import com.example.chatui.model.IngestionStatus;
 import com.example.chatui.model.MrrEvalRequest;
 import com.example.chatui.model.MrrEvalResult;
@@ -61,8 +61,31 @@ public class WebController {
     @ResponseBody
     public ResponseEntity<?> chat(@RequestBody ChatRequest request) {
         try {
-            return ResponseEntity.ok(chatClient.chat(request));
+            ChatJobStatus job = chatClient.chat(request);
+            return ResponseEntity.status(202).body(job);
         } catch (FeignException.ServiceUnavailable | FeignException.InternalServerError e) {
+            return ResponseEntity.status(502)
+                .body(Map.of("error", "Backend service unavailable. Please try again."));
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                .body(Map.of("error", "Unexpected error: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/api/chat/result/{jobId}")
+    @ResponseBody
+    public ResponseEntity<?> chatResult(@PathVariable String jobId) {
+        try {
+            Object result = chatClient.chatResult(jobId);
+            // 202 body: {jobId, status:"PROCESSING"} — pass through with 202
+            if (result instanceof Map<?, ?> map && "PROCESSING".equals(map.get("status"))) {
+                return ResponseEntity.status(202).body(result);
+            }
+            return ResponseEntity.ok(result);
+        } catch (FeignException.InternalServerError e) {
+            return ResponseEntity.status(500)
+                .body(Map.of("error", "Chat job failed: " + e.getMessage()));
+        } catch (FeignException.ServiceUnavailable e) {
             return ResponseEntity.status(502)
                 .body(Map.of("error", "Backend service unavailable. Please try again."));
         } catch (Exception e) {

@@ -289,17 +289,43 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query, conversationId })
             });
-            removeEl(typId);
             if (!res.ok) {
                 const err = await res.json().catch(() => ({ error: 'Request failed.' }));
                 appendErrMsg(err.error || 'Request failed.');
+                removeEl(typId);
+                setLoading(false);
             } else {
-                appendBotMsg(await res.json());
+                const job = await res.json();
+                pollChatResult(job.jobId, typId);
             }
         } catch (e) {
-            removeEl(typId);
             appendErrMsg('Could not reach the server.');
-        } finally { setLoading(false); }
+            removeEl(typId);
+            setLoading(false);
+        }
+    }
+
+    function pollChatResult(jobId, typId) {
+        setTimeout(async function poll() {
+            try {
+                const res = await fetch('/api/chat/result/' + jobId);
+                if (res.status === 202) {
+                    setTimeout(poll, 3000);
+                    return;
+                }
+                removeEl(typId);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({ error: 'Request failed.' }));
+                    appendErrMsg(err.error || 'Request failed.');
+                } else {
+                    appendBotMsg(await res.json());
+                }
+            } catch (e) {
+                removeEl(typId);
+                appendErrMsg('Could not reach the server.');
+            }
+            setLoading(false);
+        }, 3000);
     }
 
     function setLoading(v) {
@@ -336,8 +362,8 @@
             : `<span class="chip chip-error"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Not Found</span>`;
         const confChip = r.confidence
             ? `<span class="chip ${confMap[r.confidence] || 'chip-surface'}">${r.confidence}</span>` : '';
-        const codeEl = r.serviceCode
-            ? `<span class="resp-code">${esc(r.serviceCode)}</span>` : '';
+        const codeEl = (r.codeNumber || r.serviceCode)
+            ? `<span class="resp-code">${esc(r.codeNumber || r.serviceCode)}</span>` : '';
 
         let html = `<div class="msg-row bot fade-up">
             <div class="msg-avatar bot">✨</div>

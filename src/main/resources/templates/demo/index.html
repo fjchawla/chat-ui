@@ -787,19 +787,43 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query, conversationId: wConversationId })
         });
-        wRemove(typId);
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: 'Request failed.' }));
           wAppendErr(err.error || 'Request failed.');
+          wRemove(typId);
+          wSetLoading(false);
         } else {
-          wAppendBot(await res.json());
+          const job = await res.json();
+          wPollChatResult(job.jobId, typId);
         }
       } catch (e) {
-        wRemove(typId);
         wAppendErr('Could not reach the server.');
-      } finally {
+        wRemove(typId);
         wSetLoading(false);
       }
+    }
+
+    function wPollChatResult(jobId, typId) {
+      setTimeout(async function poll() {
+        try {
+          const res = await fetch('/api/chat/result/' + jobId);
+          if (res.status === 202) {
+            setTimeout(poll, 3000);
+            return;
+          }
+          wRemove(typId);
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: 'Request failed.' }));
+            wAppendErr(err.error || 'Request failed.');
+          } else {
+            wAppendBot(await res.json());
+          }
+        } catch (e) {
+          wRemove(typId);
+          wAppendErr('Could not reach the server.');
+        }
+        wSetLoading(false);
+      }, 3000);
     }
 
     function wSetLoading(v) {
@@ -831,8 +855,8 @@
       const foundChip = r.found
         ? `<span class="w-resp-chip w-chip-found">✓ Found</span>`
         : `<span class="w-resp-chip w-chip-miss">✗ Not Found</span>`;
-      const codeChip = r.serviceCode
-        ? `<span class="w-resp-chip w-chip-code">${wEsc(r.serviceCode)}</span>` : '';
+      const codeChip = (r.codeNumber || r.serviceCode)
+        ? `<span class="w-resp-chip w-chip-code">${wEsc(r.codeNumber || r.serviceCode)}</span>` : '';
 
       let html = `<div class="w-msg-row bot">
         <div class="w-avatar bot">✨</div>
