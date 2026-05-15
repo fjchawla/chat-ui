@@ -5,6 +5,8 @@ import com.example.chatui.client.IngestionApiClient;
 import com.example.chatui.model.ChatRequest;
 import com.example.chatui.model.ChatResponse;
 import com.example.chatui.model.IngestionStatus;
+import com.example.chatui.model.MrrEvalRequest;
+import com.example.chatui.model.MrrEvalResult;
 import feign.FeignException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,9 @@ public class WebController {
 
     @GetMapping("/ingest/status")
     public String ingestStatus() { return "ingest/status"; }
+
+    @GetMapping("/ingest/evaluate")
+    public String ingestEvaluate() { return "ingest/evaluate"; }
 
     // ── Chat API ───────────────────────────────────────────────────────
 
@@ -105,6 +110,19 @@ public class WebController {
             return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", "Trigger-all failed: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/ingest/evaluate")
+    @ResponseBody
+    public ResponseEntity<?> evaluate(@RequestBody MrrEvalRequest request) {
+        try {
+            MrrEvalResult result = ingestionClient.evaluate(request);
+            return ResponseEntity.ok(result);
+        } catch (FeignException.ServiceUnavailable e) {
+            return ResponseEntity.status(502).body(Map.of("error", "Backend service unavailable."));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Evaluation failed: " + e.getMessage()));
         }
     }
 
