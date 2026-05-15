@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,7 +16,7 @@
   <nav class="navbar">
     <div class="container navbar-inner">
       <a class="navbar-brand" href="#">
-        <img src="uae-gov-logo.png" alt="UAE Government" />
+        <img src="/demo/uae-gov-logo.png" alt="UAE Government" />
       </a>
 
       <div class="nav-links">
@@ -64,10 +64,10 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
               Browse the Code
             </a>
-            <a class="btn-hero-outline" href="#">
+            <button class="btn-hero-outline" onclick="openChat()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
               Ask AI
-            </a>
+            </button>
           </div>
         </div>
 
@@ -584,7 +584,7 @@
 
         <!-- Brand column -->
         <div class="footer-brand">
-          <img src="uae-gov-logo.png" alt="UAE Government" />
+          <img src="/demo/uae-gov-logo.png" alt="UAE Government" />
           <div class="footer-gov">Government of</div>
           <div class="footer-country">United Arab Emirates</div>
           <p class="footer-brand-desc">The official reference framework for government service excellence across all UAE federal entities.</p>
@@ -638,11 +638,241 @@
     </div>
   </footer>
 
+  <!-- Chat widget (hidden until opened) -->
+  <div class="chat-widget hidden" id="chat-widget">
+
+    <!-- Header (click to minimize/restore) -->
+    <div class="chat-widget-header" onclick="toggleMinimize()">
+      <div class="chat-widget-header-icon">🤖</div>
+      <div class="chat-widget-header-text">
+        <div class="chat-widget-title">AI Assistant</div>
+        <div class="chat-widget-sub">Ask about the Government Services Code</div>
+      </div>
+      <div class="chat-widget-actions" onclick="event.stopPropagation()">
+        <button class="chat-widget-btn" id="w-minimize-btn" title="Minimise" onclick="toggleMinimize()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>
+        </button>
+        <button class="chat-widget-btn" title="New conversation" onclick="wNewConversation()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
+        </button>
+        <button class="chat-widget-btn" title="Close" onclick="closeChat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-body" id="w-messages">
+      <div class="chat-empty" id="w-empty">
+        <div class="chat-empty-icon">🤖</div>
+        <div class="chat-empty-title">Ask the Code</div>
+        <div class="chat-empty-sub">Get instant, cited answers grounded in the UAE Government Services Code.</div>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="chat-input-bar">
+      <div class="chat-input-wrap">
+        <textarea id="w-chat-input" rows="1"
+                  placeholder="Ask about a requirement…"
+                  oninput="wAutoResize(this)"
+                  onkeydown="wHandleKey(event)"></textarea>
+      </div>
+      <button class="chat-send-btn" id="w-send-btn" onclick="wSendMessage()" title="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+
+  </div>
+
   <!-- Demo banner -->
   <div class="demo-banner">
     <strong>Demo Version</strong>
     — All content, data, and requirements shown are static and for representation purposes only.
   </div>
+
+  <script>
+    /* ── Chat widget state ─────────────────────────────────── */
+    let wConversationId = crypto.randomUUID();
+    let wLoading = false;
+    let wMinimized = false;
+
+    function openChat() {
+      const w = document.getElementById('chat-widget');
+      w.classList.remove('hidden');
+      if (wMinimized) {
+        wMinimized = false;
+        w.classList.remove('minimized');
+        updateMinimizeBtn();
+      }
+      // focus input after animation
+      setTimeout(() => document.getElementById('w-chat-input')?.focus(), 260);
+    }
+
+    function closeChat() {
+      document.getElementById('chat-widget').classList.add('hidden');
+      wMinimized = false;
+      document.getElementById('chat-widget').classList.remove('minimized');
+    }
+
+    function toggleMinimize() {
+      const w = document.getElementById('chat-widget');
+      wMinimized = !wMinimized;
+      w.classList.toggle('minimized', wMinimized);
+      updateMinimizeBtn();
+      if (!wMinimized) setTimeout(() => document.getElementById('w-chat-input')?.focus(), 10);
+    }
+
+    function updateMinimizeBtn() {
+      const btn = document.getElementById('w-minimize-btn');
+      btn.innerHTML = wMinimized
+        ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>'
+        : '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13H5v-2h14v2z"/></svg>';
+    }
+
+    /* Wire the nav "Ask AI" link */
+    document.querySelector('.nav-link[href="#"]:nth-child(4)')?.addEventListener('click', e => {
+      e.preventDefault(); openChat();
+    });
+    document.querySelectorAll('.nav-link').forEach(el => {
+      if (el.textContent.trim() === 'Ask AI') {
+        el.addEventListener('click', e => { e.preventDefault(); openChat(); });
+      }
+    });
+
+    /* ── Conversation helpers ───────────────────────────────── */
+    function wNewConversation() {
+      wConversationId = crypto.randomUUID();
+      const msgs = document.getElementById('w-messages');
+      msgs.innerHTML = `
+        <div class="chat-empty" id="w-empty">
+          <div class="chat-empty-icon">🤖</div>
+          <div class="chat-empty-title">Ask the Code</div>
+          <div class="chat-empty-sub">Get instant, cited answers grounded in the UAE Government Services Code.</div>
+        </div>`;
+    }
+
+    function wAutoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+    }
+
+    function wHandleKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); wSendMessage(); }
+    }
+
+    /* ── Send & receive ─────────────────────────────────────── */
+    async function wSendMessage() {
+      const input = document.getElementById('w-chat-input');
+      const query = input.value.trim();
+      if (!query || wLoading) return;
+
+      document.getElementById('w-empty')?.remove();
+      wAppendUser(query);
+      input.value = '';
+      input.style.height = 'auto';
+      const typId = wAppendTyping();
+      wSetLoading(true);
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, conversationId: wConversationId })
+        });
+        wRemove(typId);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Request failed.' }));
+          wAppendErr(err.error || 'Request failed.');
+        } else {
+          wAppendBot(await res.json());
+        }
+      } catch (e) {
+        wRemove(typId);
+        wAppendErr('Could not reach the server.');
+      } finally {
+        wSetLoading(false);
+      }
+    }
+
+    function wSetLoading(v) {
+      wLoading = v;
+      document.getElementById('w-send-btn').disabled = v;
+    }
+
+    function wAppendUser(text) {
+      wAppend(`
+        <div class="w-msg-row user">
+          <div class="w-avatar user">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          </div>
+          <div class="w-bubble">${wEsc(text)}</div>
+        </div>`);
+    }
+
+    function wAppendTyping() {
+      const id = 'wtyp-' + Date.now();
+      wAppend(`
+        <div class="w-msg-row bot" id="${id}">
+          <div class="w-avatar bot">✨</div>
+          <div class="w-bubble"><div class="w-typing"><span></span><span></span><span></span></div></div>
+        </div>`);
+      return id;
+    }
+
+    function wAppendBot(r) {
+      const foundChip = r.found
+        ? `<span class="w-resp-chip w-chip-found">✓ Found</span>`
+        : `<span class="w-resp-chip w-chip-miss">✗ Not Found</span>`;
+      const codeChip = r.serviceCode
+        ? `<span class="w-resp-chip w-chip-code">${wEsc(r.serviceCode)}</span>` : '';
+
+      let html = `<div class="w-msg-row bot">
+        <div class="w-avatar bot">✨</div>
+        <div class="w-bubble">
+          <div>${foundChip}${codeChip}</div>
+          <div style="margin-top:6px">${wEsc(r.description || 'No description available.')}</div>`;
+
+      if (r.serviceNameEnglish) {
+        html += `<div class="w-resp-label">Service Name</div>
+                 <div>${wEsc(r.serviceNameEnglish)}</div>`;
+      }
+      if (r.serviceNameArabic) {
+        html += `<div class="w-resp-arabic">${wEsc(r.serviceNameArabic)}</div>`;
+      }
+      if (r.additionalInfo) {
+        html += `<div class="w-resp-label">Details</div>
+                 <div style="font-size:12px;opacity:.8">${wEsc(r.additionalInfo)}</div>`;
+      }
+      html += `</div></div>`;
+      wAppend(html);
+    }
+
+    function wAppendErr(text) {
+      wAppend(`
+        <div class="w-msg-row bot">
+          <div class="w-avatar bot">✨</div>
+          <div class="w-bubble err">⚠ ${wEsc(text)}</div>
+        </div>`);
+    }
+
+    function wAppend(html) {
+      const c = document.getElementById('w-messages');
+      const el = document.createElement('div');
+      el.innerHTML = html;
+      c.appendChild(el.firstElementChild);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function wRemove(id) { document.getElementById(id)?.remove(); }
+
+    function wEsc(s) {
+      if (!s) return '';
+      return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+    }
+  </script>
 
 </body>
 </html>
