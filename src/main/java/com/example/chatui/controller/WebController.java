@@ -7,14 +7,24 @@ import com.example.chatui.model.ChatRequest;
 import com.example.chatui.model.IngestionStatus;
 import com.example.chatui.model.MrrEvalRequest;
 import com.example.chatui.model.MrrEvalResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import java.util.List;
 import java.util.Map;
@@ -25,11 +35,18 @@ public class WebController {
     private final ChatApiClient chatClient;
     private final IngestionApiClient ingestionClient;
     private final JdbcTemplate jdbc;
+    private final ObjectMapper objectMapper;
+    private final ExecutorService sseExecutor = Executors.newCachedThreadPool();
 
-    public WebController(ChatApiClient chatClient, IngestionApiClient ingestionClient, JdbcTemplate jdbc) {
+    @Value("${backend.base-url}")
+    private String backendBaseUrl;
+
+    public WebController(ChatApiClient chatClient, IngestionApiClient ingestionClient,
+                         JdbcTemplate jdbc, ObjectMapper objectMapper) {
         this.chatClient = chatClient;
         this.ingestionClient = ingestionClient;
         this.jdbc = jdbc;
+        this.objectMapper = objectMapper;
     }
 
     // ── Page routes ────────────────────────────────────────────────────
@@ -92,6 +109,55 @@ public class WebController {
             return ResponseEntity.status(500)
                 .body(Map.of("error", "Unexpected error: " + e.getMessage()));
         }
+    }
+
+    @PostMapping(value = "/api/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter chatStream(@RequestBody ChatRequest request) {
+        SseEmitter emitter = new SseEmitter(300_000L);
+        sseExecutor.submit(() -> {
+            try {
+                HttpURLConnection conn = (HttpURLConnection)
+                    URI.create(backendBaseUrl + "/api/chat/stream").toURL().openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "text/event-stream");
+                conn.setDoOutput(true);
+                conn.setReadTimeout(300_000);
+                conn.setConnectTimeout(5_000);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(objectMapper.writeValueAsBytes(request));
+                }
+
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    String eventType = null;
+                    StringBuilder data = new StringBuilder();
+                    while ((line = reader.readLine()) != null) {
+                        if (line.startsWith("event:")) {
+                            eventType = line.substring(6).trim();
+                        } else if (line.startsWith("data:")) {
+                            data.append(line.substring(5).trim());
+                        } else if (line.isEmpty() && eventType != null) {
+                            emitter.send(SseEmitter.event().name(eventType).data(data.toString()));
+                            if ("result".equals(eventType) || "error".equals(eventType)) {
+                                emitter.complete();
+                                return;
+                            }
+                            eventType = null;
+                            data.setLength(0);
+                        }
+                    }
+                    emitter.complete();
+                }
+            } catch (Exception e) {
+                try { emitter.send(SseEmitter.event().name("error").data(e.getMessage())); }
+                catch (IOException ignored) {}
+                emitter.completeWithError(e);
+            }
+        });
+        return emitter;
     }
 
     // ── Ingestion API ──────────────────────────────────────────────────

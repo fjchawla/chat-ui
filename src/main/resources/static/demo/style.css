@@ -906,6 +906,18 @@ body { padding-bottom: 36px; }
   40% { transform: translateY(-5px); }
 }
 
+/* Streaming text */
+.w-stream-text { white-space: pre-wrap; word-break: break-word; }
+.w-stream-cursor {
+  display: inline-block;
+  width: 2px; height: 1em;
+  background: rgba(247,237,204,.8);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: w-blink 1s step-end infinite;
+}
+@keyframes w-blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
 /* Input bar */
 .chat-input-bar {
   display: flex;

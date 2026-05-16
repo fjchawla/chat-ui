@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: chat-ui
+  mvc:
+    async:
+      request-timeout: -1   # required for long-lived SSE streaming connections
   thymeleaf:
     cache: false
   servlet:

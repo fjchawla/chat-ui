@@ -781,49 +781,95 @@
       const typId = wAppendTyping();
       wSetLoading(true);
 
+      let streamRowEl = null;
+      let streamTextEl = null;
+      let firstToken = true;
+
       try {
-        const res = await fetch('/api/chat', {
+        const res = await fetch('/api/chat/stream', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query, conversationId: wConversationId })
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: 'Request failed.' }));
-          wAppendErr(err.error || 'Request failed.');
           wRemove(typId);
+          wAppendErr(err.error || 'Request failed.');
           wSetLoading(false);
-        } else {
-          const job = await res.json();
-          wPollChatResult(job.jobId, typId);
+          return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let eventType = null;
+        let eventData = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (line.startsWith('event:')) {
+              eventType = line.slice(6).trim();
+            } else if (line.startsWith('data:')) {
+              eventData += line.slice(5);
+            } else if (line === '') {
+              if (eventType === 'token') {
+                if (firstToken) {
+                  wRemove(typId);
+                  const id = 'wstream-' + Date.now();
+                  wAppend(`
+                    <div class="w-msg-row bot" id="${id}">
+                      <div class="w-avatar bot">✨</div>
+                      <div class="w-bubble"><span class="w-stream-text"></span><span class="w-stream-cursor"></span></div>
+                    </div>`);
+                  streamRowEl = document.getElementById(id);
+                  streamTextEl = streamRowEl.querySelector('.w-stream-text');
+                  firstToken = false;
+                }
+                if (streamTextEl) {
+                  streamTextEl.textContent += eventData;
+                  const c = document.getElementById('w-messages');
+                  c.scrollTop = c.scrollHeight;
+                }
+              } else if (eventType === 'result') {
+                const r = JSON.parse(eventData);
+                if (streamRowEl) {
+                  streamRowEl.querySelector('.w-bubble').innerHTML = wBuildBotHTML(r);
+                } else {
+                  wRemove(typId);
+                  wAppendBot(r);
+                }
+              } else if (eventType === 'error') {
+                const errText = wEsc(eventData || 'Request failed.');
+                if (streamRowEl) {
+                  streamRowEl.querySelector('.w-bubble').innerHTML =
+                    `<span style="color:rgba(255,160,140,.9)">⚠ ${errText}</span>`;
+                } else {
+                  wRemove(typId);
+                  wAppendErr(eventData || 'Request failed.');
+                }
+              }
+              eventType = null;
+              eventData = '';
+            }
+          }
         }
       } catch (e) {
-        wAppendErr('Could not reach the server.');
         wRemove(typId);
-        wSetLoading(false);
-      }
-    }
-
-    function wPollChatResult(jobId, typId) {
-      setTimeout(async function poll() {
-        try {
-          const res = await fetch('/api/chat/result/' + jobId);
-          if (res.status === 202) {
-            setTimeout(poll, 3000);
-            return;
-          }
-          wRemove(typId);
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({ error: 'Request failed.' }));
-            wAppendErr(err.error || 'Request failed.');
-          } else {
-            wAppendBot(await res.json());
-          }
-        } catch (e) {
-          wRemove(typId);
+        if (streamRowEl) {
+          streamRowEl.querySelector('.w-bubble').innerHTML =
+            '<span style="color:rgba(255,160,140,.9)">⚠ Could not reach the server.</span>';
+        } else {
           wAppendErr('Could not reach the server.');
         }
-        wSetLoading(false);
-      }, 3000);
+      }
+      wSetLoading(false);
     }
 
     function wSetLoading(v) {
@@ -851,18 +897,15 @@
       return id;
     }
 
-    function wAppendBot(r) {
+    function wBuildBotHTML(r) {
       const foundChip = r.found
         ? `<span class="w-resp-chip w-chip-found">✓ Found</span>`
         : `<span class="w-resp-chip w-chip-miss">✗ Not Found</span>`;
       const codeChip = (r.codeNumber || r.serviceCode)
         ? `<span class="w-resp-chip w-chip-code">${wEsc(r.codeNumber || r.serviceCode)}</span>` : '';
 
-      let html = `<div class="w-msg-row bot">
-        <div class="w-avatar bot">✨</div>
-        <div class="w-bubble">
-          <div>${foundChip}${codeChip}</div>
-          <div style="margin-top:6px">${wEsc(r.description || 'No description available.')}</div>`;
+      let html = `<div>${foundChip}${codeChip}</div>
+        <div style="margin-top:6px">${wEsc(r.description || 'No description available.')}</div>`;
 
       if (r.serviceNameEnglish) {
         html += `<div class="w-resp-label">Service Name</div>
@@ -875,8 +918,14 @@
         html += `<div class="w-resp-label">Details</div>
                  <div style="font-size:12px;opacity:.8">${wEsc(r.additionalInfo)}</div>`;
       }
-      html += `</div></div>`;
-      wAppend(html);
+      return html;
+    }
+
+    function wAppendBot(r) {
+      wAppend(`<div class="w-msg-row bot">
+        <div class="w-avatar bot">✨</div>
+        <div class="w-bubble">${wBuildBotHTML(r)}</div>
+      </div>`);
     }
 
     function wAppendErr(text) {
