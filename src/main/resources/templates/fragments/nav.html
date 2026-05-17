@@ -69,6 +69,12 @@
             </svg>
             MRR Evaluation
         </a>
+        <a th:href="@{/demo3}" th:class="${activePage == 'demo3'} ? 'tab active' : 'tab'" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+            </svg>
+            Demo 3
+        </a>
         <a th:href="@{/demo2}" th:class="${activePage == 'demo2'} ? 'tab active' : 'tab'" target="_blank" rel="noopener noreferrer">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 6h18M3 12h12M3 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>

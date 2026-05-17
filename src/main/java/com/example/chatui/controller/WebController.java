@@ -75,6 +75,9 @@ public class WebController {
     @GetMapping("/demo2")
     public String demo2() { return "demo2/index"; }
 
+    @GetMapping("/demo3")
+    public String demo3() { return "demo3/index"; }
+
     // ── Chat API ───────────────────────────────────────────────────────
 
     @PostMapping("/api/chat")
