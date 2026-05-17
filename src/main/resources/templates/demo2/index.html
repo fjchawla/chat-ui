@@ -1127,27 +1127,44 @@
       50% { opacity: 0; }
     }
 
-    .result-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 10px;
-      border-radius: 100px;
-      font-size: .7rem;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: .7rem; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
     }
-    .result-chip.found { background: rgba(26,92,56,0.1); color: var(--emerald); }
-    .result-chip.not-found { background: rgba(139,26,44,0.1); color: var(--crimson); }
-    .result-service-code {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 700;
-      font-size: .8rem;
-      color: var(--gold-dark);
-      margin-bottom: 4px;
+    .chip-success { background: rgba(26,92,56,0.12); color: var(--emerald); }
+    .chip-error   { background: rgba(139,26,44,0.12); color: var(--crimson); }
+    .chip-primary { background: rgba(201,168,76,0.15); color: var(--gold-dark); }
+    .chip-warning { background: rgba(180,130,0,0.12); color: #9a7a2e; }
+    .chip-surface { background: var(--surface); color: var(--ink-mid); }
+    .resp-header  { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .resp-code {
+      font-family: 'SF Mono','Fira Code',monospace; font-size: 12px;
+      background: rgba(201,168,76,0.12); color: var(--gold-dark);
+      padding: 2px 8px; border-radius: 6px; letter-spacing: .02em;
     }
+    .resp-section { margin-top: 10px; }
+    .resp-label {
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--ink-soft); margin-bottom: 3px;
+    }
+    .resp-arabic {
+      direction: rtl; text-align: right; font-size: 14px; color: var(--ink-mid);
+      background: var(--surface); border-radius: 8px; padding: 6px 10px;
+    }
+    .resp-excerpt {
+      font-size: 13px; color: var(--ink-mid);
+      border-left: 2px solid var(--border-subtle);
+      padding-left: 10px; font-style: italic;
+    }
+    .stream-text { white-space: pre-wrap; word-break: break-word; }
+    .stream-cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--ink); margin-left: 1px; vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     .chat-input-area {
       padding: 16px;
@@ -1921,6 +1938,42 @@
     isSending = !enabled;
   }
 
+  function esc(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+  }
+
+  function buildBotHTML(r) {
+    const confMap = { HIGH:'chip-primary', MEDIUM:'chip-warning', LOW:'chip-error' };
+    const foundChip = r.found
+        ? `<span class="chip chip-success"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Found</span>`
+        : `<span class="chip chip-error"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Not Found</span>`;
+    const confChip = r.confidence
+        ? `<span class="chip ${confMap[r.confidence] || 'chip-surface'}">${r.confidence}</span>` : '';
+    const codeEl = (r.codeNumber || r.serviceCode)
+        ? `<span class="resp-code">${esc(r.codeNumber || r.serviceCode)}</span>` : '';
+
+    let html = `<div class="resp-header">${foundChip}${confChip}${codeEl}</div>
+        <div style="font-size:14px">${esc(r.description || 'No description available.')}</div>`;
+
+    if (r.serviceNameEnglish || r.serviceNameArabic) {
+      html += `<div class="resp-section"><div class="resp-label">Service Name</div>`;
+      if (r.serviceNameEnglish) html += `<div style="font-size:14px">${esc(r.serviceNameEnglish)}</div>`;
+      if (r.serviceNameArabic)  html += `<div class="resp-arabic">${esc(r.serviceNameArabic)}</div>`;
+      html += `</div>`;
+    }
+    if (r.additionalInfo) {
+      html += `<div class="resp-section"><div class="resp-label">Details</div>
+          <div style="font-size:13.5px;color:var(--ink-soft)">${esc(r.additionalInfo)}</div></div>`;
+    }
+    if (r.arabicSourceExcerpt) {
+      html += `<div class="resp-section"><div class="resp-label">Source Excerpt</div>
+          <div class="resp-excerpt resp-arabic">${esc(r.arabicSourceExcerpt)}</div></div>`;
+    }
+    return html;
+  }
+
   async function sendMessage() {
     const text = chatInput.value.trim();
     if (!text || isSending) return;
@@ -1930,138 +1983,113 @@
 
     addMessage(text, 'user');
 
-    /* typing indicator */
+    const typId = 'typ-' + Date.now();
     const typingEl = document.createElement('div');
+    typingEl.id = typId;
     typingEl.className = 'chat-msg bot typing';
     typingEl.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
     chatMessages.appendChild(typingEl);
     scrollChatBottom();
 
     let botEl = null;
-    let streamText = '';
-    let typingGone = false;
-    let currentEvent = '';
-
-    function removeTyping() {
-      if (!typingGone && typingEl.parentNode) {
-        typingEl.parentNode.removeChild(typingEl);
-        typingGone = true;
-      }
-    }
+    let streamTextEl = null;
+    let firstToken = true;
 
     try {
-      const resp = await fetch('/api/chat/stream', {
+      const res = await fetch('/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: text })
       });
 
-      if (!resp.ok) throw new Error('Server error ' + resp.status);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Request failed.' }));
+        document.getElementById(typId)?.remove();
+        const el = document.createElement('div');
+        el.className = 'chat-msg bot';
+        el.innerHTML = `<span style="color:var(--crimson)">⚠ ${esc(err.error || 'Request failed.')}</span>`;
+        chatMessages.appendChild(el);
+        setInputEnabled(true);
+        return;
+      }
 
-      const reader = resp.body.getReader();
+      const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let raw = '';
+      let buffer = '';
+      let eventType = null;
+      let eventData = '';
 
       while (true) {
-        const { value, done } = await reader.read();
+        const { done, value } = await reader.read();
         if (done) break;
-        raw += decoder.decode(value, { stream: true });
 
-        const lines = raw.split('\n');
-        raw = lines.pop(); /* keep incomplete line in buffer */
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
 
         for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) { currentEvent = ''; continue; }
-
-          if (trimmed.startsWith('event:')) {
-            currentEvent = trimmed.slice(6).trim();
-          } else if (trimmed.startsWith('data:')) {
-            const payload = trimmed.slice(5).trim();
-
-            if (currentEvent === 'token') {
-              removeTyping();
-              if (!botEl) {
-                botEl = document.createElement('div');
-                botEl.className = 'chat-msg bot';
-                chatMessages.appendChild(botEl);
+          if (line.startsWith('event:')) {
+            eventType = line.slice(6).trim();
+          } else if (line.startsWith('data:')) {
+            eventData += line.slice(5);
+          } else if (line === '') {
+            if (eventType === 'token') {
+              if (firstToken) {
+                document.getElementById(typId)?.remove();
+                const id = 'stream-' + Date.now();
+                const el = document.createElement('div');
+                el.id = id;
+                el.className = 'chat-msg bot';
+                el.innerHTML = `<span class="stream-text"></span><span class="stream-cursor"></span>`;
+                chatMessages.appendChild(el);
+                botEl = el;
+                streamTextEl = el.querySelector('.stream-text');
+                firstToken = false;
               }
-              streamText += payload;
-              botEl.innerHTML = streamText.replace(/\n/g, '<br>') + '<span class="cursor"></span>';
-              scrollChatBottom();
-
-            } else if (currentEvent === 'result') {
-              removeTyping();
-              try {
-                const result = JSON.parse(payload);
-                const found = result.found !== false;
-                const chip = found
-                  ? '<span class="result-chip found">✓ Found in Code</span>'
-                  : '<span class="result-chip not-found">✗ Not found</span>';
-                const code = result.serviceCode ? `<div class="result-service-code">${result.serviceCode}</div>` : '';
-                const desc = result.description || result.text || result.answer || streamText || payload;
-                const html = `${chip}${code}<div>${desc.replace(/\n/g, '<br>')}</div>`;
-                if (botEl) {
-                  botEl.innerHTML = html;
-                } else {
-                  const el = document.createElement('div');
-                  el.className = 'chat-msg bot';
-                  el.innerHTML = html;
-                  chatMessages.appendChild(el);
-                }
-              } catch {
-                const fallback = (streamText || payload).replace(/\n/g, '<br>');
-                if (botEl) {
-                  botEl.innerHTML = fallback;
-                } else {
-                  addMessage(fallback, 'bot', true);
-                }
+              if (streamTextEl) {
+                streamTextEl.textContent += eventData;
+                scrollChatBottom();
               }
-              streamText = '';
-              botEl = null;
-              scrollChatBottom();
-
-            } else if (currentEvent === 'error') {
-              removeTyping();
-              const errHtml = '<span style="color:var(--crimson)">Sorry, an error occurred. Please try again.</span>';
+            } else if (eventType === 'result') {
+              const r = JSON.parse(eventData);
               if (botEl) {
-                botEl.innerHTML = errHtml;
-                botEl = null;
+                botEl.innerHTML = buildBotHTML(r);
               } else {
+                document.getElementById(typId)?.remove();
                 const el = document.createElement('div');
                 el.className = 'chat-msg bot';
-                el.innerHTML = errHtml;
+                el.innerHTML = buildBotHTML(r);
                 chatMessages.appendChild(el);
               }
               scrollChatBottom();
-
-            } else if (!currentEvent || currentEvent === 'message') {
-              /* plain data line — treat as token */
-              if (payload && payload !== '[DONE]') {
-                removeTyping();
-                if (!botEl) {
-                  botEl = document.createElement('div');
-                  botEl.className = 'chat-msg bot';
-                  chatMessages.appendChild(botEl);
-                }
-                streamText += payload;
-                botEl.innerHTML = streamText.replace(/\n/g, '<br>') + '<span class="cursor"></span>';
-                scrollChatBottom();
+            } else if (eventType === 'error') {
+              const errText = esc(eventData || 'Request failed.');
+              if (botEl) {
+                botEl.innerHTML = `<span style="color:var(--crimson)">⚠ ${errText}</span>`;
+              } else {
+                document.getElementById(typId)?.remove();
+                const el = document.createElement('div');
+                el.className = 'chat-msg bot';
+                el.innerHTML = `<span style="color:var(--crimson)">⚠ ${errText}</span>`;
+                chatMessages.appendChild(el);
               }
             }
+            eventType = null;
+            eventData = '';
           }
         }
       }
 
-      /* clean up blinking cursor */
-      if (botEl) {
-        botEl.innerHTML = botEl.innerHTML.replace('<span class="cursor"></span>', '');
-      }
-      removeTyping();
-
     } catch (err) {
-      removeTyping();
-      addMessage('Sorry, I could not connect to the server. Please try again.', 'bot');
+      document.getElementById(typId)?.remove();
+      if (botEl) {
+        botEl.innerHTML = `<span style="color:var(--crimson)">⚠ Could not reach the server.</span>`;
+      } else {
+        const el = document.createElement('div');
+        el.className = 'chat-msg bot';
+        el.innerHTML = `<span style="color:var(--crimson)">⚠ Could not reach the server.</span>`;
+        chatMessages.appendChild(el);
+      }
     }
 
     setInputEnabled(true);
