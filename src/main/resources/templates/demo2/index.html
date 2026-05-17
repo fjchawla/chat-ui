@@ -1953,7 +1953,7 @@
       const resp = await fetch('/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text })
+        body: JSON.stringify({ query: text })
       });
 
       if (!resp.ok) throw new Error('Server error ' + resp.status);
