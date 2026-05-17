@@ -2163,7 +2163,7 @@
     if (chatEmptyEl && chatEmptyEl.parentNode) {
       chatEmptyEl.remove();
     }
-    return appendMessage(escapeHtml(text), 'msg-user');
+    return appendMessage(esc(text), 'msg-user');
   }
 
   function appendBotWrap() {
